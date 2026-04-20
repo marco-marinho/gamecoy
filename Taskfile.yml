@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: '3'
+
+tasks:
+  build-test:
+    desc: Build the project and run tests 
+    cmds:
+      - cmake --build build
+      - cp build/gamecoy.cpython-314-x86_64-linux-gnu.so tests/gamecoy.cpython-314-x86_64-linux-gnu.so
+      - pytest -n auto tests
+    silent: true

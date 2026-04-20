@@ -1,0 +1,28 @@
+#pragma once
+
+typedef enum {
+  OP_MUST_FETCH,
+  OP_NOP,
+  OP_LD_R16_IMM16,
+  OP_LD_R16REF_A,
+  OP_INC_R16,
+  OP_INC_R8,
+  OP_DEC_R8,
+  OP_LD_R8_IMM8,
+  OP_RLCA,
+  OP_LD_IMM16REF_SP,
+  OP_ADD_HL_R16,
+  OP_LD_A_R16REF,
+  OP_DEC_R16,
+  OP_RRCA,
+  OP_STOP,
+  OP_RLA,
+  OP_JR_S8,
+  OP_RRA,
+  OP_JR_NZ_S8,
+  OP_LD_HL_PLUS_REF_A,
+  OP_DAA,
+  OP_JR_Z_S8,
+  OP_LD_A_HL_PLUS_REF,
+  OP_CPL,
+} opcode_t;
