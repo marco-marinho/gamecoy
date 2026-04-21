@@ -207,6 +207,20 @@ void decode_instruction(cpu_t *const restrict cpu) {
   case 0x5C: // LD E, H
   case 0x5D: // LD E, L
   case 0x5F: // LD E, A
+  case 0x60: // LD H, B
+  case 0x61: // LD H, C
+  case 0x62: // LD H, D
+  case 0x63: // LD H, E
+  case 0x64: // LD H, H
+  case 0x65: // LD H, L
+  case 0x67: // LD H, A
+  case 0x68: // LD L, B
+  case 0x69: // LD L, C
+  case 0x6A: // LD L, D
+  case 0x6B: // LD L, E
+  case 0x6C: // LD L, H
+  case 0x6D: // LD L, L
+  case 0x6F: // LD L, A
     cpu->current_opcode = OP_LD_R8_R8;
     cpu->cycles_left = 1;
     break;
@@ -214,6 +228,8 @@ void decode_instruction(cpu_t *const restrict cpu) {
   case 0x4E: // LD C, (HL)
   case 0x56: // LD D, (HL)
   case 0x5E: // LD E, (HL)
+  case 0x66: // LD H, (HL)
+  case 0x6E: // LD L, (HL)
     cpu->current_opcode = OP_LD_R8_HL_REF;
     cpu->cycles_left = 2;
     break;

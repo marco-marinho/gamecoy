@@ -45,3 +45,8 @@ if(ipo_supported)
 else()
     message(WARNING "LTO/IPO not supported: ${error}")
 endif()
+
+enable_testing()
+add_test(NAME json_tests COMMAND json_tests)
+set_tests_properties(json_tests PROPERTIES
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})

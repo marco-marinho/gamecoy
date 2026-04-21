@@ -26,10 +26,12 @@ r8_t r8_from_opcode(uint8_t opcode) {
   case 0x24: // INC H
   case 0x25: // DEC H
   case 0x26: // LD H, d8
+  case 0x66: // LD H, (HL)
     return R8_H;
   case 0x2C: // INC L
   case 0x2D: // DEC L
   case 0x2E: // LD L, d8
+  case 0x6E: // LD L, (HL)
     return R8_L;
   case 0x3C: // INC A
   case 0x3D: // DEC A
@@ -124,6 +126,34 @@ r8_pair_t r8_pair_from_opcode(uint8_t opcode) {
     return (r8_pair_t){.first_operand = R8_E, .second_operand = R8_L};
   case 0x5F:
     return (r8_pair_t){.first_operand = R8_E, .second_operand = R8_A};
+  case 0x60:
+    return (r8_pair_t){.first_operand = R8_H, .second_operand = R8_B};
+  case 0x61:
+    return (r8_pair_t){.first_operand = R8_H, .second_operand = R8_C};
+  case 0x62:
+    return (r8_pair_t){.first_operand = R8_H, .second_operand = R8_D};
+  case 0x63:
+    return (r8_pair_t){.first_operand = R8_H, .second_operand = R8_E};
+  case 0x64:
+    return (r8_pair_t){.first_operand = R8_H, .second_operand = R8_H};
+  case 0x65:
+    return (r8_pair_t){.first_operand = R8_H, .second_operand = R8_L};
+  case 0x67:
+    return (r8_pair_t){.first_operand = R8_H, .second_operand = R8_A};
+  case 0x68:
+    return (r8_pair_t){.first_operand = R8_L, .second_operand = R8_B};
+  case 0x69:
+    return (r8_pair_t){.first_operand = R8_L, .second_operand = R8_C};
+  case 0x6A:
+    return (r8_pair_t){.first_operand = R8_L, .second_operand = R8_D};
+  case 0x6B:
+    return (r8_pair_t){.first_operand = R8_L, .second_operand = R8_E};
+  case 0x6C:
+    return (r8_pair_t){.first_operand = R8_L, .second_operand = R8_H};
+  case 0x6D:
+    return (r8_pair_t){.first_operand = R8_L, .second_operand = R8_L};
+  case 0x6F:
+    return (r8_pair_t){.first_operand = R8_L, .second_operand = R8_A};
   default:
     return (r8_pair_t){.first_operand = -1, .second_operand = -1};
   }
