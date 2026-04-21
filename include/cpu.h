@@ -8,6 +8,10 @@
 #define HALF_CARRY 0x20
 #define CARRY 0x10
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct {
   uint16_t pc;
   uint16_t sp;
@@ -35,9 +39,13 @@ typedef enum {
   R8_D = 3,
   R8_E = 4,
   R8_F = 5,
-  R8_G = 6,
+  R8_G = 6, // Not an actual register, unused
   R8_H = 7,
   R8_L = 8,
 } r8_t;
 
-void tick(cpu_t *const restrict cpu);
+void tick(cpu_t *const cpu);
+
+#ifdef __cplusplus
+}
+#endif

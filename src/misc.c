@@ -49,3 +49,17 @@ void daa(cpu_t *const restrict cpu) {
   cpu->pc += 1;
   cpu->cycles_left -= 1;
 }
+
+void scf(cpu_t *const restrict cpu) {
+  cpu->registers[R8_F] = (cpu->registers[R8_F] & ZERO) | CARRY;
+  cpu->pc += 1;
+  cpu->cycles_left -= 1;
+}
+
+void ccf(cpu_t *const restrict cpu) {
+  uint8_t c_flag = cpu->registers[R8_F] & CARRY ? 0 : CARRY;
+  uint8_t zero_flag = cpu->registers[R8_F] & ZERO;
+  cpu->registers[R8_F] = zero_flag | c_flag;
+  cpu->pc += 1;
+  cpu->cycles_left -= 1;
+}

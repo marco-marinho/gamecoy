@@ -82,3 +82,68 @@ void dec_r16(cpu_t *const restrict cpu) {
   }
   cpu->cycles_left -= 1;
 }
+
+void inc_sp(cpu_t *const restrict cpu) {
+  if (cpu->cycles_left == 1) {
+    cpu->sp += 1;
+    cpu->pc += 1;
+  }
+  cpu->cycles_left -= 1;
+}
+
+void inc_hl_ref(cpu_t *const restrict cpu) {
+  if (cpu->cycles_left == 2) {
+    uint16_t hl = read_r16(cpu, R16_HL);
+    cpu->first_operand = cpu->ram[hl];
+    cpu->pc += 1;
+  } else if (cpu->cycles_left == 1) {
+    uint8_t old = cpu->first_operand;
+    uint8_t new = old + 1;
+    uint8_t half_carry = overflow_from_bit3(old, 1) ? HALF_CARRY : 0;
+    cpu->ram[read_r16(cpu, R16_HL)] = new;
+    uint8_t zero = new == 0 ? ZERO : 0;
+    uint8_t current_carry = cpu->registers[R8_F] & CARRY ? CARRY : 0;
+    cpu->registers[R8_F] = zero | half_carry | current_carry;
+  }
+  cpu->cycles_left -= 1;
+}
+
+void dec_hl_ref(cpu_t *const restrict cpu) {
+  if (cpu->cycles_left == 2) {
+    uint16_t hl = read_r16(cpu, R16_HL);
+    cpu->first_operand = cpu->ram[hl];
+    cpu->pc += 1;
+  } else if (cpu->cycles_left == 1) {
+    uint8_t old = cpu->first_operand;
+    uint8_t new = old - 1;
+    uint8_t half_carry = underflow_from_bit3(old, 1) ? HALF_CARRY : 0;
+    cpu->ram[read_r16(cpu, R16_HL)] = new;
+    uint8_t zero = new == 0 ? ZERO : 0;
+    uint8_t current_carry = cpu->registers[R8_F] & CARRY ? CARRY : 0;
+    cpu->registers[R8_F] = zero | SUBTRACT | half_carry | current_carry;
+  }
+  cpu->cycles_left -= 1;
+}
+
+void add_hl_sp(cpu_t *const restrict cpu) {
+  if (cpu->cycles_left == 2) {
+    cpu->pc += 1;
+  } else if (cpu->cycles_left == 1) {
+    uint16_t hl = read_r16(cpu, R16_HL);
+    uint16_t value = cpu->sp;
+    uint16_t result = hl + value;
+    store_r16(cpu, R16_HL, result);
+    uint8_t half_carry = overflow_from_bit11(hl, value) ? HALF_CARRY : 0;
+    uint8_t carry = overflow_from_bit15(hl, value) ? CARRY : 0;
+    cpu->registers[R8_F] = (cpu->registers[R8_F] & ZERO) | half_carry | carry;
+  }
+  cpu->cycles_left -= 1;
+}
+
+void dec_sp(cpu_t *const restrict cpu) {
+  if (cpu->cycles_left == 1) {
+    cpu->sp -= 1;
+    cpu->pc += 1;
+  }
+  cpu->cycles_left -= 1;
+}

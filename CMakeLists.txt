@@ -1,11 +1,13 @@
 cmake_minimum_required(VERSION 4.3)
-
+include(CheckIPOSupported)
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 
 project(
   GameCoy
   VERSION 1.0
-  LANGUAGES C)
+  LANGUAGES C CXX)
+
+check_ipo_supported(RESULT ipo_supported OUTPUT error)
 
 add_library(GameCoy
   src/decoder.c
@@ -23,9 +25,23 @@ target_include_directories(GameCoy
   PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-set_property(TARGET GameCoy PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+add_executable(json_tests
+  tests/json_tests.cpp)
 
-add_custom_command(
-  TARGET GameCoy
-  POST_BUILD
-  COMMAND python ${CMAKE_CURRENT_SOURCE_DIR}/cffi_wrapper.py) 
+target_include_directories(json_tests
+  PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/external/json/single_include
+  ${CMAKE_CURRENT_SOURCE_DIR}/external/doctest/doctest)
+
+target_link_libraries(json_tests
+  PRIVATE
+  GameCoy)
+
+if(ipo_supported)
+    message(STATUS "LTO/IPO is supported and enabled.")
+    set_target_properties(GameCoy PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
+    set_target_properties(json_tests PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
+else()
+    message(WARNING "LTO/IPO not supported: ${error}")
+endif()

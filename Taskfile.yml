@@ -7,6 +7,5 @@ tasks:
     desc: Build the project and run tests 
     cmds:
       - cmake --build build
-      - cp build/gamecoy.cpython-314-x86_64-linux-gnu.so tests/gamecoy.cpython-314-x86_64-linux-gnu.so
-      - pytest -n auto tests
+      - ./build/json_tests
     silent: true
