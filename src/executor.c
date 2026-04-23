@@ -137,6 +137,48 @@ void execute_instruction(cpu_t *const restrict cpu) {
   case OP_ADD_A_HL_REF:
     add_a_hl_ref(cpu);
     break;
+  case OP_ADC_A_R8:
+    adc_a_r8(cpu);
+    break;
+  case OP_ADC_A_HL_REF:
+    adc_a_hl_ref(cpu);
+    break;
+  case OP_SUB_A_R8:
+    sub_a_r8(cpu);
+    break;
+  case OP_SUB_A_HL_REF:
+    sub_a_hl_ref(cpu);
+    break;
+  case OP_SBC_A_R8:
+    sbc_a_r8(cpu);
+    break;
+  case OP_SBC_A_HL_REF:
+    sbc_a_hl_ref(cpu);
+    break;
+  case OP_AND_A_R8:
+    and_a_r8(cpu);
+    break;
+  case OP_AND_A_HL_REF:
+    and_a_hl_ref(cpu);
+    break;
+  case OP_XOR_A_R8:
+    xor_a_r8(cpu);
+    break;
+  case OP_XOR_A_HL_REF:
+    xor_a_hl_ref(cpu);
+    break;
+  case OP_OR_A_R8:
+    or_a_r8(cpu);
+    break;
+  case OP_OR_A_HL_REF:
+    or_a_hl_ref(cpu);
+    break;
+  case OP_CP_A_R8:
+    cp_a_r8(cpu);
+    break;
+  case OP_CP_A_HL_REF:
+    cp_a_hl_ref(cpu);
+    break;
   default:
     printf("[Executor] Unknown opcode: 0x%02X\n", cpu->current_opcode);
     break;

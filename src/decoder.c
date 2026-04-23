@@ -269,6 +269,104 @@ void decode_instruction(cpu_t *const restrict cpu) {
     cpu->current_opcode = OP_ADD_A_HL_REF;
     cpu->cycles_left = 2;
     break;
+  case 0x88: // ADC A, B
+  case 0x89: // ADC A, C
+  case 0x8A: // ADC A, D
+  case 0x8B: // ADC A, E
+  case 0x8C: // ADC A, H
+  case 0x8D: // ADC A, L
+  case 0x8F: // ADC A, A
+    cpu->current_opcode = OP_ADC_A_R8;
+    cpu->cycles_left = 1;
+    break;
+  case 0x8E: // ADC A, (HL)
+    cpu->current_opcode = OP_ADC_A_HL_REF;
+    cpu->cycles_left = 2;
+    break;
+  case 0x90: // SUB A, B
+  case 0x91: // SUB A, C
+  case 0x92: // SUB A, D
+  case 0x93: // SUB A, E
+  case 0x94: // SUB A, H
+  case 0x95: // SUB A, L
+  case 0x97: // SUB A, A
+    cpu->current_opcode = OP_SUB_A_R8;
+    cpu->cycles_left = 1;
+    break;
+  case 0x96: // SUB A, (HL)
+    cpu->current_opcode = OP_SUB_A_HL_REF;
+    cpu->cycles_left = 2;
+    break;
+  case 0x98: // SBC A, B
+  case 0x99: // SBC A, C
+  case 0x9A: // SBC A, D
+  case 0x9B: // SBC A, E
+  case 0x9C: // SBC A, H
+  case 0x9D: // SBC A, L
+  case 0x9F: // SBC A, A
+    cpu->current_opcode = OP_SBC_A_R8;
+    cpu->cycles_left = 1;
+    break;
+  case 0x9E: // SBC A, (HL)
+    cpu->current_opcode = OP_SBC_A_HL_REF;
+    cpu->cycles_left = 2;
+    break;
+  case 0xA0: // AND A, B
+  case 0xA1: // AND A, C
+  case 0xA2: // AND A, D
+  case 0xA3: // AND A, E
+  case 0xA4: // AND A, H
+  case 0xA5: // AND A, L
+  case 0xA7: // AND A, A
+    cpu->current_opcode = OP_AND_A_R8;
+    cpu->cycles_left = 1;
+    break;
+  case 0xA6: // AND A, (HL)
+    cpu->current_opcode = OP_AND_A_HL_REF;
+    cpu->cycles_left = 2;
+    break;
+  case 0xA8: // XOR A, B
+  case 0xA9: // XOR A, C
+  case 0xAA: // XOR A, D
+  case 0xAB: // XOR A, E
+  case 0xAC: // XOR A, H
+  case 0xAD: // XOR A, L
+  case 0xAF: // XOR A, A
+    cpu->current_opcode = OP_XOR_A_R8;
+    cpu->cycles_left = 1;
+    break;
+  case 0xAE: // XOR A, (HL)
+    cpu->current_opcode = OP_XOR_A_HL_REF;
+    cpu->cycles_left = 2;
+    break;
+  case 0xB0: // OR A, B
+  case 0xB1: // OR A, C
+  case 0xB2: // OR A, D
+  case 0xB3: // OR A, E
+  case 0xB4: // OR A, H
+  case 0xB5: // OR A, L
+  case 0xB7: // OR A, A
+    cpu->current_opcode = OP_OR_A_R8;
+    cpu->cycles_left = 1;
+    break;
+  case 0xB6: // OR A, (HL)
+    cpu->current_opcode = OP_OR_A_HL_REF;
+    cpu->cycles_left = 2;
+    break;
+  case 0xB8: // CP A, B
+  case 0xB9: // CP A, C
+  case 0xBA: // CP A, D
+  case 0xBB: // CP A, E
+  case 0xBC: // CP A, H
+  case 0xBD: // CP A, L
+  case 0xBF: // CP A, A
+    cpu->current_opcode = OP_CP_A_R8;
+    cpu->cycles_left = 1;
+    break;
+  case 0xBE: // CP A, (HL)
+    cpu->current_opcode = OP_CP_A_HL_REF;
+    cpu->cycles_left = 2;
+    break;
   default:
     printf("[Decoder] Unknown opcode: 0x%02X\n", opcode);
     break;

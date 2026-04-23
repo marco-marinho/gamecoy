@@ -9,6 +9,13 @@ r8_t r8_from_opcode(uint8_t opcode) {
   case 0x46: // LD B, (HL)
   case 0x70: // LD (HL), B
   case 0x80: // ADD A, B
+  case 0x88: // ADC A, B
+  case 0x90: // SUB A, B
+  case 0x98: // SBC A, B
+  case 0xA0: // AND A, B
+  case 0xA8: // XOR A, B
+  case 0xB0: // OR A, B
+  case 0xB8: // CP A, B
     return R8_B;
   case 0x0C: // INC C
   case 0x0D: // DEC C
@@ -16,6 +23,13 @@ r8_t r8_from_opcode(uint8_t opcode) {
   case 0x4E: // LD C, (HL)
   case 0x71: // LD (HL), C
   case 0x81: // ADD A, C
+  case 0x89: // ADC A, C
+  case 0x91: // SUB A, C
+  case 0x99: // SBC A, C
+  case 0xA1: // AND A, C
+  case 0xA9: // XOR A, C
+  case 0xB1: // OR A, C
+  case 0xB9: // CP A, C
     return R8_C;
   case 0x14: // INC D
   case 0x15: // DEC D
@@ -23,6 +37,13 @@ r8_t r8_from_opcode(uint8_t opcode) {
   case 0x56: // LD D, (HL)
   case 0x72: // LD (HL), D
   case 0x82: // ADD A, D
+  case 0x8A: // ADC A, D
+  case 0x92: // SUB A, D
+  case 0x9A: // SBC A, D
+  case 0xA2: // AND A, D
+  case 0xAA: // XOR A, D
+  case 0xB2: // OR A, D
+  case 0xBA: // CP A, D
     return R8_D;
   case 0x1C: // INC E
   case 0x1D: // DEC E
@@ -30,6 +51,13 @@ r8_t r8_from_opcode(uint8_t opcode) {
   case 0x5E: // LD E, (HL)
   case 0x73: // LD (HL), E
   case 0x83: // ADD A, E
+  case 0x8B: // ADC A, E
+  case 0x93: // SUB A, E
+  case 0x9B: // SBC A, E
+  case 0xA3: // AND A, E
+  case 0xAB: // XOR A, E
+  case 0xB3: // OR A, E
+  case 0xBB: // CP A, E
     return R8_E;
   case 0x24: // INC H
   case 0x25: // DEC H
@@ -37,6 +65,13 @@ r8_t r8_from_opcode(uint8_t opcode) {
   case 0x66: // LD H, (HL)
   case 0x74: // LD (HL), H
   case 0x84: // ADD A, H
+  case 0x8C: // ADC A, H
+  case 0x94: // SUB A, H
+  case 0x9C: // SBC A, H
+  case 0xA4: // AND A, H
+  case 0xAC: // XOR A, H
+  case 0xB4: // OR A, H
+  case 0xBC: // CP A, H
     return R8_H;
   case 0x2C: // INC L
   case 0x2D: // DEC L
@@ -44,6 +79,13 @@ r8_t r8_from_opcode(uint8_t opcode) {
   case 0x6E: // LD L, (HL)
   case 0x75: // LD (HL), L
   case 0x85: // ADD A, L
+  case 0x8D: // ADC A, L
+  case 0x95: // SUB A, L
+  case 0x9D: // SBC A, L
+  case 0xA5: // AND A, L
+  case 0xAD: // XOR A, L
+  case 0xB5: // OR A, L
+  case 0xBD: // CP A, L
     return R8_L;
   case 0x3C: // INC A
   case 0x3D: // DEC A
@@ -51,6 +93,13 @@ r8_t r8_from_opcode(uint8_t opcode) {
   case 0x77: // LD (HL), A
   case 0x7E: // LD A, (HL)
   case 0x87: // ADD A, A
+  case 0x8F: // ADC A, A
+  case 0x97: // SUB A, A
+  case 0x9F: // SBC A, A
+  case 0xA7: // AND A, A
+  case 0xAF: // XOR A, A
+  case 0xB7: // OR A, A
+  case 0xBF: // CP A, A
     return R8_A;
   default:
     return -1;
