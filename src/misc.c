@@ -11,6 +11,12 @@ void stop(cpu_t *const restrict cpu) {
   cpu->cycles_left -= 1;
 }
 
+void halt(cpu_t *const restrict cpu) {
+  cpu->halted = 1;
+  cpu->pc += 1;
+  cpu->cycles_left -= 1;
+}
+
 void daa(cpu_t *const restrict cpu) {
   uint8_t a = cpu->registers[R8_A];
   uint8_t f = cpu->registers[R8_F];

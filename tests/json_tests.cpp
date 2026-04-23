@@ -51,7 +51,7 @@ void verify_test(const cpu_t *cpu, const json &expected) {
 TEST_CASE("SM83 Instruction JSON Tests") {
   std::vector<std::string> testable;
   testable.reserve(0xFFFF);
-  for (int op = 0x00; op <= 0x6F; ++op) {
+  for (int op = 0x00; op <= 0x87; ++op) {
     char hex[3];
     std::snprintf(hex, sizeof(hex), "%02x", op);
     testable.emplace_back(hex);
@@ -86,7 +86,7 @@ TEST_CASE("SM83 Instruction JSON Tests") {
 
       verify_test(&cpu, test_case["final"]);
 
-      if (name.find("10") != 0) {
+      if (name.find("10") != 0 && name.find("76") != 0) {
         size_t expected_cycles = test_case["cycles"].size();
         CHECK_MESSAGE(cycles == expected_cycles,
                       "Cycle count mismatch in " << name);

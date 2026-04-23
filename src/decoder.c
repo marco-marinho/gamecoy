@@ -221,6 +221,13 @@ void decode_instruction(cpu_t *const restrict cpu) {
   case 0x6C: // LD L, H
   case 0x6D: // LD L, L
   case 0x6F: // LD L, A
+  case 0x78: // LD A, B
+  case 0x79: // LD A, C
+  case 0x7A: // LD A, D
+  case 0x7B: // LD A, E
+  case 0x7C: // LD A, H
+  case 0x7D: // LD A, L
+  case 0x7F: // LD A, A
     cpu->current_opcode = OP_LD_R8_R8;
     cpu->cycles_left = 1;
     break;
@@ -230,7 +237,36 @@ void decode_instruction(cpu_t *const restrict cpu) {
   case 0x5E: // LD E, (HL)
   case 0x66: // LD H, (HL)
   case 0x6E: // LD L, (HL)
+  case 0x7E: // LD A, (HL)
     cpu->current_opcode = OP_LD_R8_HL_REF;
+    cpu->cycles_left = 2;
+    break;
+  case 0x70: // LD (HL), B
+  case 0x71: // LD (HL), C
+  case 0x72: // LD (HL), D
+  case 0x73: // LD (HL), E
+  case 0x74: // LD (HL), H
+  case 0x75: // LD (HL), L
+  case 0x77: // LD (HL), A
+    cpu->current_opcode = OP_LD_HL_REF_R8;
+    cpu->cycles_left = 2;
+    break;
+  case 0x76: // HALT
+    cpu->current_opcode = OP_HALT;
+    cpu->cycles_left = 1;
+    break;
+  case 0x80: // ADD A, B
+  case 0x81: // ADD A, C
+  case 0x82: // ADD A, D
+  case 0x83: // ADD A, E
+  case 0x84: // ADD A, H
+  case 0x85: // ADD A, L
+  case 0x87: // ADD A, A
+    cpu->current_opcode = OP_ADD_A_R8;
+    cpu->cycles_left = 1;
+    break;
+  case 0x86: // ADD A, (HL)
+    cpu->current_opcode = OP_ADD_A_HL_REF;
     cpu->cycles_left = 2;
     break;
   default:

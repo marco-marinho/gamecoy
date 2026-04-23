@@ -125,6 +125,18 @@ void execute_instruction(cpu_t *const restrict cpu) {
   case OP_LD_R8_HL_REF:
     ld_r8_hl_ref(cpu);
     break;
+  case OP_LD_HL_REF_R8:
+    ld_hl_ref_r8(cpu);
+    break;
+  case OP_HALT:
+    halt(cpu);
+    break;
+  case OP_ADD_A_R8:
+    add_a_r8(cpu);
+    break;
+  case OP_ADD_A_HL_REF:
+    add_a_hl_ref(cpu);
+    break;
   default:
     printf("[Executor] Unknown opcode: 0x%02X\n", cpu->current_opcode);
     break;

@@ -193,3 +193,14 @@ void ld_r8_hl_ref(cpu_t *const restrict cpu) {
   }
   cpu->cycles_left -= 1;
 }
+
+void ld_hl_ref_r8(cpu_t *const restrict cpu) {
+  if (cpu->cycles_left == 2) {
+    cpu->first_operand = r8_from_opcode(cpu->ram[cpu->pc]);
+    cpu->pc += 1;
+  } else if (cpu->cycles_left == 1) {
+    uint16_t hl = read_r16(cpu, R16_HL);
+    cpu->ram[hl] = cpu->registers[cpu->first_operand];
+  }
+  cpu->cycles_left -= 1;
+}

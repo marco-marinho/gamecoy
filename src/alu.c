@@ -14,6 +14,10 @@ static inline uint8_t overflow_from_bit15(uint16_t a, uint16_t b) {
   return ((uint32_t)a + (uint32_t)b) > 0xFFFF;
 }
 
+static inline uint8_t overflow_from_bit7(uint8_t a, uint8_t b) {
+  return ((uint16_t)a + (uint16_t)b) > 0xFF;
+}
+
 static inline uint8_t underflow_from_bit3(uint8_t a, uint8_t b) {
   return (a & 0x0F) < (b & 0x0F);
 }
@@ -144,6 +148,37 @@ void dec_sp(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 1) {
     cpu->sp -= 1;
     cpu->pc += 1;
+  }
+  cpu->cycles_left -= 1;
+}
+
+void add_a_r8(cpu_t *const restrict cpu) {
+  r8_t target_reg = r8_from_opcode(cpu->ram[cpu->pc]);
+  uint8_t a = cpu->registers[R8_A];
+  uint8_t value = cpu->registers[target_reg];
+  uint8_t result = a + value;
+  cpu->registers[R8_A] = result;
+  uint8_t half_carry = overflow_from_bit3(a, value) ? HALF_CARRY : 0;
+  uint8_t carry = overflow_from_bit7(a, value) ? CARRY : 0;
+  uint8_t zero = result == 0 ? ZERO : 0;
+  cpu->registers[R8_F] = zero | half_carry | carry;
+  cpu->pc += 1;
+  cpu->cycles_left -= 1;
+}
+
+void add_a_hl_ref(cpu_t *const restrict cpu) {
+  if (cpu->cycles_left == 2) {
+    cpu->first_operand = cpu->ram[read_r16(cpu, R16_HL)];
+    cpu->pc += 1;
+  } else if (cpu->cycles_left == 1) {
+    uint8_t a = cpu->registers[R8_A];
+    uint8_t value = cpu->first_operand;
+    uint8_t result = a + value;
+    cpu->registers[R8_A] = result;
+    uint8_t half_carry = overflow_from_bit3(a, value) ? HALF_CARRY : 0;
+    uint8_t carry = overflow_from_bit7(a, value) ? CARRY : 0;
+    uint8_t zero = result == 0 ? ZERO : 0;
+    cpu->registers[R8_F] = zero | half_carry | carry;
   }
   cpu->cycles_left -= 1;
 }

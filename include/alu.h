@@ -12,3 +12,5 @@ void inc_hl_ref(cpu_t *const restrict cpu);
 void dec_hl_ref(cpu_t *const restrict cpu);
 void add_hl_sp(cpu_t *const restrict cpu);
 void dec_sp(cpu_t *const restrict cpu);
+void add_a_r8(cpu_t *const restrict cpu);
+void add_a_hl_ref(cpu_t *const restrict cpu);

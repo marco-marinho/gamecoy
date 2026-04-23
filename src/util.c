@@ -7,35 +7,50 @@ r8_t r8_from_opcode(uint8_t opcode) {
   case 0x05: // DEC B
   case 0x06: // LD B, d8
   case 0x46: // LD B, (HL)
+  case 0x70: // LD (HL), B
+  case 0x80: // ADD A, B
     return R8_B;
   case 0x0C: // INC C
   case 0x0D: // DEC C
   case 0x0E: // LD C, d8
   case 0x4E: // LD C, (HL)
+  case 0x71: // LD (HL), C
+  case 0x81: // ADD A, C
     return R8_C;
   case 0x14: // INC D
   case 0x15: // DEC D
   case 0x16: // LD D, d8
   case 0x56: // LD D, (HL)
+  case 0x72: // LD (HL), D
+  case 0x82: // ADD A, D
     return R8_D;
   case 0x1C: // INC E
   case 0x1D: // DEC E
   case 0x1E: // LD E, d8
   case 0x5E: // LD E, (HL)
+  case 0x73: // LD (HL), E
+  case 0x83: // ADD A, E
     return R8_E;
   case 0x24: // INC H
   case 0x25: // DEC H
   case 0x26: // LD H, d8
   case 0x66: // LD H, (HL)
+  case 0x74: // LD (HL), H
+  case 0x84: // ADD A, H
     return R8_H;
   case 0x2C: // INC L
   case 0x2D: // DEC L
   case 0x2E: // LD L, d8
   case 0x6E: // LD L, (HL)
+  case 0x75: // LD (HL), L
+  case 0x85: // ADD A, L
     return R8_L;
   case 0x3C: // INC A
   case 0x3D: // DEC A
   case 0x3E: // LD A, d8
+  case 0x77: // LD (HL), A
+  case 0x7E: // LD A, (HL)
+  case 0x87: // ADD A, A
     return R8_A;
   default:
     return -1;
@@ -154,6 +169,20 @@ r8_pair_t r8_pair_from_opcode(uint8_t opcode) {
     return (r8_pair_t){.first_operand = R8_L, .second_operand = R8_L};
   case 0x6F:
     return (r8_pair_t){.first_operand = R8_L, .second_operand = R8_A};
+  case 0x78:
+    return (r8_pair_t){.first_operand = R8_A, .second_operand = R8_B};
+  case 0x79:
+    return (r8_pair_t){.first_operand = R8_A, .second_operand = R8_C};
+  case 0x7A:
+    return (r8_pair_t){.first_operand = R8_A, .second_operand = R8_D};
+  case 0x7B:
+    return (r8_pair_t){.first_operand = R8_A, .second_operand = R8_E};
+  case 0x7C:
+    return (r8_pair_t){.first_operand = R8_A, .second_operand = R8_H};
+  case 0x7D:
+    return (r8_pair_t){.first_operand = R8_A, .second_operand = R8_L};
+  case 0x7F:
+    return (r8_pair_t){.first_operand = R8_A, .second_operand = R8_A};
   default:
     return (r8_pair_t){.first_operand = -1, .second_operand = -1};
   }

@@ -40,4 +40,8 @@ typedef enum {
   OP_CCF,
   OP_LD_R8_R8,
   OP_LD_R8_HL_REF,
+  OP_LD_HL_REF_R8,
+  OP_HALT,
+  OP_ADD_A_R8,
+  OP_ADD_A_HL_REF,
 } opcode_t;
