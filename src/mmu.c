@@ -204,3 +204,37 @@ void ld_hl_ref_r8(cpu_t *const restrict cpu) {
   }
   cpu->cycles_left -= 1;
 }
+
+void pop_r16(cpu_t *const restrict cpu) {
+  if (cpu->cycles_left == 3) {
+    r16_t r16 = r16_from_opcode(cpu->ram[cpu->pc]);
+    r8_pair_t pair = r8_pair_from_r16(r16);
+    cpu->first_operand = pair.first_operand;
+    cpu->second_operand = pair.second_operand;
+    cpu->pc += 1;
+  } else if (cpu->cycles_left == 2) {
+    cpu->registers[cpu->second_operand] = cpu->ram[cpu->sp];
+    cpu->sp += 1;
+  } else if (cpu->cycles_left == 1) {
+    cpu->registers[cpu->first_operand] = cpu->ram[cpu->sp];
+    cpu->sp += 1;
+  }
+  cpu->cycles_left -= 1;
+}
+
+void push_r16(cpu_t *const restrict cpu) {
+  if (cpu->cycles_left == 3) {
+    r16_t r16 = r16_from_opcode(cpu->ram[cpu->pc]);
+    r8_pair_t pair = r8_pair_from_r16(r16);
+    cpu->first_operand = pair.first_operand;
+    cpu->second_operand = pair.second_operand;
+    cpu->pc += 1;
+  } else if (cpu->cycles_left == 2) {
+    cpu->sp -= 1;
+    cpu->ram[cpu->sp] = cpu->registers[cpu->first_operand];
+  } else if (cpu->cycles_left == 1) {
+    cpu->sp -= 1;
+    cpu->ram[cpu->sp] = cpu->registers[cpu->second_operand];
+  }
+  cpu->cycles_left -= 1;
+}

@@ -179,9 +179,84 @@ void execute_instruction(cpu_t *const restrict cpu) {
   case OP_CP_A_HL_REF:
     cp_a_hl_ref(cpu);
     break;
+  case OP_RET_NZ:
+    ret_nz(cpu);
+    break;
+  case OP_POP_R16:
+    pop_r16(cpu);
+    break;
+  case OP_JP_NZ_IMM16:
+    jp_nz_imm16(cpu);
+    break;
+  case OP_JP_IMM16:
+    jp_imm16(cpu);
+    break;
+  case OP_CALL_NZ_IMM16:
+    call_nz_imm16(cpu);
+    break;
+  case OP_PUSH_R16:
+    push_r16(cpu);
+    break;
+  case OP_ADD_A_IMM8:
+    add_a_imm8(cpu);
+    break;
+  case OP_RST:
+    rst(cpu);
+    break;
+  case OP_RET_ZERO:
+    ret_z(cpu);
+    break;
+  case OP_RET:
+    ret(cpu);
+    break;
+  case OP_JP_Z_IMM16:
+    jp_z_imm16(cpu);
+    break;
+  case OP_CALL_Z_IMM16:
+    call_z_imm16(cpu);
+    break;
+  case OP_CALL_IMM16:
+    call_imm16(cpu);
+    break;
+  case OP_ADC_A_IMM8:
+    adc_a_imm8(cpu);
+    break;
+  case OP_RET_NC:
+    ret_nc(cpu);
+    break;
+  case OP_JP_NC_IMM16:
+    jp_nc_imm16(cpu);
+    break;
+  case OP_CALL_NC_IMM16:
+    call_nc_imm16(cpu);
+    break;
+  case OP_SUB_A_IMM8:
+    sub_a_imm8(cpu);
+    break;
+  case OP_RET_C:
+    ret_c(cpu);
+    break;
+  case OP_RETI:
+    reti(cpu);
+    break;
+  case OP_JP_C_IMM16:
+    jp_c_imm16(cpu);
+    break;
+  case OP_CALL_C_IMM16:
+    call_c_imm16(cpu);
+    break;
+  case OP_SBC_A_IMM8:
+    sbc_a_imm8(cpu);
+    break;
   default:
     printf("[Executor] Unknown opcode: 0x%02X\n", cpu->current_opcode);
     break;
+  }
+  if (cpu->ie_delay > 0) {
+    cpu->ie_delay -= 1;
+    if (cpu->ie_delay == 0) {
+      cpu->ime = 1;
+    }
   }
   if (cpu->cycles_left == 0) {
     cpu->current_opcode = OP_MUST_FETCH;

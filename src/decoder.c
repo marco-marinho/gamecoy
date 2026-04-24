@@ -367,6 +367,105 @@ void decode_instruction(cpu_t *const restrict cpu) {
     cpu->current_opcode = OP_CP_A_HL_REF;
     cpu->cycles_left = 2;
     break;
+  case 0xC0: // RET NZ
+    cpu->current_opcode = OP_RET_NZ;
+    cpu->cycles_left = 5;
+    break;
+  case 0xC1: // POP BC
+  case 0xD1: // POP DE
+  case 0xE1: // POP HL
+  case 0xF1: // POP AF
+    cpu->current_opcode = OP_POP_R16;
+    cpu->cycles_left = 3;
+    break;
+  case 0xC2: // JP NZ, a16
+    cpu->current_opcode = OP_JP_NZ_IMM16;
+    cpu->cycles_left = 4;
+    break;
+  case 0xC3: // JP a16
+    cpu->current_opcode = OP_JP_IMM16;
+    cpu->cycles_left = 4;
+    break;
+  case 0xC4: // CALL NZ, a16
+    cpu->current_opcode = OP_CALL_NZ_IMM16;
+    cpu->cycles_left = 6;
+    break;
+  case 0xC5: // PUSH BC
+  case 0xD5: // PUSH DE
+    cpu->current_opcode = OP_PUSH_R16;
+    cpu->cycles_left = 4;
+    break;
+  case 0xC6: // ADD A, d8
+    cpu->current_opcode = OP_ADD_A_IMM8;
+    cpu->cycles_left = 2;
+    break;
+  case 0xC7: // RST 00H
+  case 0xCF: // RST 08H
+  case 0xD7: // RST 10H
+  case 0xDF: // RST 18H
+    cpu->current_opcode = OP_RST;
+    cpu->cycles_left = 4;
+    break;
+  case 0xC8: // RET Z
+    cpu->current_opcode = OP_RET_ZERO;
+    cpu->cycles_left = 5;
+    break;
+  case 0xC9: // RET
+    cpu->current_opcode = OP_RET;
+    cpu->cycles_left = 4;
+    break;
+  case 0xCA: // JP Z, a16
+    cpu->current_opcode = OP_JP_Z_IMM16;
+    cpu->cycles_left = 4;
+    break;
+  case 0xCC: // CALL Z, a16
+    cpu->current_opcode = OP_CALL_Z_IMM16;
+    cpu->cycles_left = 6;
+    break;
+  case 0xCD: // CALL a16
+    cpu->current_opcode = OP_CALL_IMM16;
+    cpu->cycles_left = 6;
+    break;
+  case 0xCE: // ADC A, d8
+    cpu->current_opcode = OP_ADC_A_IMM8;
+    cpu->cycles_left = 2;
+    break;
+  case 0xD0: // RET NC
+    cpu->current_opcode = OP_RET_NC;
+    cpu->cycles_left = 5;
+    break;
+  case 0xD2: // JP NC, a16
+    cpu->current_opcode = OP_JP_NC_IMM16;
+    cpu->cycles_left = 4;
+    break;
+  case 0xD4: // CALL NC, a16
+    cpu->current_opcode = OP_CALL_NC_IMM16;
+    cpu->cycles_left = 6;
+    break;
+  case 0xD6: // SUB A, d8
+    cpu->current_opcode = OP_SUB_A_IMM8;
+    cpu->cycles_left = 2;
+    break;
+  case 0xD8: // RET C
+    cpu->current_opcode = OP_RET_C;
+    cpu->cycles_left = 5;
+    break;
+  case 0xD9: // RETI
+    cpu->current_opcode = OP_RETI;
+    cpu->cycles_left = 4;
+    break;
+  case 0xDA: // JP C, a16
+    cpu->current_opcode = OP_JP_C_IMM16;
+    cpu->cycles_left = 4;
+    break;
+  case 0xDC: // CALL C, a16
+    cpu->current_opcode = OP_CALL_C_IMM16;
+    cpu->cycles_left = 6;
+    break;
+  case 0xDE: // SBC A, d8
+    cpu->current_opcode = OP_SBC_A_IMM8;
+    cpu->cycles_left = 2;
+    break;
   default:
     printf("[Decoder] Unknown opcode: 0x%02X\n", opcode);
     break;

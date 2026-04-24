@@ -22,3 +22,5 @@ typedef struct
 r8_t r8_from_opcode(uint8_t opcode);
 r16_t r16_from_opcode(uint8_t opcode);
 r8_pair_t r8_pair_from_opcode(uint8_t opcode);
+r8_pair_t r8_pair_from_r16(r16_t r16);
+uint16_t get_rst_vector(uint8_t opcode);

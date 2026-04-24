@@ -7,5 +7,5 @@ tasks:
     desc: Build the project and run tests 
     cmds:
       - cmake --build build
-      - ./build/json_tests
+      - ./build/json_tests -d
     silent: true

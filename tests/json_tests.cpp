@@ -51,7 +51,9 @@ void verify_test(const cpu_t *cpu, const json &expected) {
 TEST_CASE("SM83 Instruction JSON Tests") {
   std::vector<std::string> testable;
   testable.reserve(0xFFFF);
-  for (int op = 0x00; op <= 0xBF; ++op) {
+  for (int op = 0x00; op <= 0xDF; ++op) {
+    if (op == 0xCB)
+      continue; // CB-prefixed opcodes are tested separately
     char hex[3];
     std::snprintf(hex, sizeof(hex), "%02x", op);
     testable.emplace_back(hex);
@@ -60,10 +62,8 @@ TEST_CASE("SM83 Instruction JSON Tests") {
   for (const auto &op : testable) {
     std::string path = "external/sm83/v1/" + op + ".json";
     std::ifstream f(path);
-
     if (!f.is_open())
       continue;
-
     json test_cases;
     f >> test_cases;
 

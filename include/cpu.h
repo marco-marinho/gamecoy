@@ -18,11 +18,12 @@ typedef struct {
   uint8_t registers[9];
   uint8_t ram[65536];
   uint8_t halted;
-  uint8_t pendingIE;
   opcode_t current_opcode;
   uint16_t first_operand;
   uint16_t second_operand;
   uint8_t cycles_left;
+  uint8_t ie_delay;
+  uint8_t ime;
 } cpu_t;
 
 typedef enum {

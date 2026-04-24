@@ -106,6 +106,7 @@ r8_t r8_from_opcode(uint8_t opcode) {
   }
 }
 
+
 r16_t r16_from_opcode(uint8_t opcode) {
   switch (opcode) {
   case 0x01: // LD BC, d16
@@ -114,6 +115,8 @@ r16_t r16_from_opcode(uint8_t opcode) {
   case 0x09: // ADD HL, BC
   case 0x0A: // LD A, (BC)
   case 0x0B: // DEC BC
+  case 0xC1: // POP BC
+  case 0xC5: // PUSH BC
     return R16_BC;
   case 0x11: // LD DE, d16
   case 0x12: // LD (DE), A
@@ -121,6 +124,8 @@ r16_t r16_from_opcode(uint8_t opcode) {
   case 0x19: // ADD HL, DE
   case 0x1A: // LD A, (DE)
   case 0x1B: // DEC DE
+  case 0xD1: // POP DE
+  case 0xD5: // PUSH DE
     return R16_DE;
   case 0x21: // LD HL, d16
   case 0x23: // INC HL
@@ -234,5 +239,41 @@ r8_pair_t r8_pair_from_opcode(uint8_t opcode) {
     return (r8_pair_t){.first_operand = R8_A, .second_operand = R8_A};
   default:
     return (r8_pair_t){.first_operand = -1, .second_operand = -1};
+  }
+}
+
+r8_pair_t r8_pair_from_r16(r16_t r16) {
+  switch (r16) {
+  case R16_BC:
+    return (r8_pair_t){.first_operand = R8_B, .second_operand = R8_C};
+  case R16_DE:
+    return (r8_pair_t){.first_operand = R8_D, .second_operand = R8_E};
+  case R16_HL:
+    return (r8_pair_t){.first_operand = R8_H, .second_operand = R8_L};
+  default:
+    return (r8_pair_t){.first_operand = -1, .second_operand = -1};
+  }
+}
+
+uint16_t get_rst_vector(uint8_t opcode){
+  switch (opcode) {
+    case 0xC7: // RST 00H
+      return 0x00;
+    case 0xCF: // RST 08H
+      return 0x08;
+    case 0xD7: // RST 10H
+      return 0x10;
+    case 0xDF: // RST 18H
+      return 0x18;
+    case 0xE7: // RST 20H
+      return 0x20;
+    case 0xEF: // RST 28H
+      return 0x28;
+    case 0xF7: // RST 30H
+      return 0x30;
+    case 0xFF: // RST 38H
+      return 0x38;
+    default:
+      return 0x00; // Default to 0x00 for invalid RST opcodes
   }
 }
