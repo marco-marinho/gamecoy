@@ -238,3 +238,27 @@ void push_r16(cpu_t *const restrict cpu) {
   }
   cpu->cycles_left -= 1;
 }
+
+void ldh_imm8_ref_a(cpu_t *const restrict cpu) {
+  if (cpu->cycles_left == 3) {
+    cpu->pc += 1;
+  } else if (cpu->cycles_left == 2) {
+    cpu->first_operand = cpu->ram[cpu->pc];
+    cpu->pc += 1;
+  } else if (cpu->cycles_left == 1) {
+    uint8_t offset = cpu->first_operand;
+    cpu->ram[0xFF00 + offset] = cpu->registers[R8_A];
+  }
+  cpu->cycles_left -= 1;
+}
+
+void ldh_c_ref_a(cpu_t *const restrict cpu) {
+  if (cpu->cycles_left == 2) {
+    cpu->first_operand = cpu->registers[R8_C];
+    cpu->pc += 1;
+  } else if (cpu->cycles_left == 1) {
+    uint8_t offset = cpu->first_operand;
+    cpu->ram[0xFF00 + offset] = cpu->registers[R8_A];
+  }
+  cpu->cycles_left -= 1;
+}

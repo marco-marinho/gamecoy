@@ -131,6 +131,8 @@ r16_t r16_from_opcode(uint8_t opcode) {
   case 0x23: // INC HL
   case 0x29: // ADD HL, HL
   case 0x2B: // DEC HL
+  case 0xE1: // POP HL
+  case 0xE5: // PUSH HL
     return R16_HL;
   default:
     return -1;

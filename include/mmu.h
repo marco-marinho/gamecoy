@@ -21,3 +21,5 @@ void ld_r8_hl_ref(cpu_t *const restrict cpu);
 void ld_hl_ref_r8(cpu_t *const restrict cpu);
 void pop_r16(cpu_t *const restrict cpu);
 void push_r16(cpu_t *const restrict cpu);
+void ldh_imm8_ref_a(cpu_t *const restrict cpu);
+void ldh_c_ref_a(cpu_t *const restrict cpu);

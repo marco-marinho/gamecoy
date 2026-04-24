@@ -248,6 +248,12 @@ void execute_instruction(cpu_t *const restrict cpu) {
   case OP_SBC_A_IMM8:
     sbc_a_imm8(cpu);
     break;
+  case OP_LDH_IMM8_REF_A:
+    ldh_imm8_ref_a(cpu);
+    break;
+  case OP_LDH_C_REF_A:
+    ldh_c_ref_a(cpu);
+    break;
   default:
     printf("[Executor] Unknown opcode: 0x%02X\n", cpu->current_opcode);
     break;

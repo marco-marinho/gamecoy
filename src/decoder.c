@@ -392,6 +392,7 @@ void decode_instruction(cpu_t *const restrict cpu) {
     break;
   case 0xC5: // PUSH BC
   case 0xD5: // PUSH DE
+  case 0xE5: // PUSH HL
     cpu->current_opcode = OP_PUSH_R16;
     cpu->cycles_left = 4;
     break;
@@ -464,6 +465,14 @@ void decode_instruction(cpu_t *const restrict cpu) {
     break;
   case 0xDE: // SBC A, d8
     cpu->current_opcode = OP_SBC_A_IMM8;
+    cpu->cycles_left = 2;
+    break;
+  case 0xE0: // LDH (a8), A
+    cpu->current_opcode = OP_LDH_IMM8_REF_A;
+    cpu->cycles_left = 3;
+    break;
+  case 0xE2: // LDH (C), A
+    cpu->current_opcode = OP_LDH_C_REF_A;
     cpu->cycles_left = 2;
     break;
   default:

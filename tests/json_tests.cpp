@@ -51,7 +51,7 @@ void verify_test(const cpu_t *cpu, const json &expected) {
 TEST_CASE("SM83 Instruction JSON Tests") {
   std::vector<std::string> testable;
   testable.reserve(0xFFFF);
-  for (int op = 0x00; op <= 0xDF; ++op) {
+  for (int op = 0x00; op <= 0xE5; ++op) {
     if (op == 0xCB)
       continue; // CB-prefixed opcodes are tested separately
     char hex[3];

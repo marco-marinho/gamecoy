@@ -81,4 +81,6 @@ typedef enum {
   OP_JP_C_IMM16,
   OP_CALL_C_IMM16,
   OP_SBC_A_IMM8,
+  OP_LDH_IMM8_REF_A,
+  OP_LDH_C_REF_A,
 } opcode_t;
