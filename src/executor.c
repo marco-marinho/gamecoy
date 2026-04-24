@@ -8,6 +8,7 @@
 #include "misc.h"
 #include "mmu.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 void execute_instruction(cpu_t *const restrict cpu) {
   switch (cpu->current_opcode) {
@@ -255,8 +256,8 @@ void execute_instruction(cpu_t *const restrict cpu) {
     ldh_c_ref_a(cpu);
     break;
   default:
-    printf("[Executor] Unknown opcode: 0x%02X\n", cpu->current_opcode);
-    break;
+    fprintf(stderr, "[Executor] Unknown opcode: 0x%02X\n", cpu->current_opcode);
+    exit(EXIT_FAILURE);
   }
   if (cpu->ie_delay > 0) {
     cpu->ie_delay -= 1;

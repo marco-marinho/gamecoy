@@ -1,5 +1,7 @@
 #include "util.h"
 #include "cpu.h"
+#include <stdlib.h>
+#include <stdio.h>
 
 r8_t r8_from_opcode(uint8_t opcode) {
   switch (opcode) {
@@ -102,7 +104,8 @@ r8_t r8_from_opcode(uint8_t opcode) {
   case 0xBF: // CP A, A
     return R8_A;
   default:
-    return -1;
+    fprintf(stderr, "[Util - r8_from_opcode] Unknown opcode: 0x%02X\n", opcode);
+    exit(EXIT_FAILURE);
   }
 }
 
@@ -135,7 +138,8 @@ r16_t r16_from_opcode(uint8_t opcode) {
   case 0xE5: // PUSH HL
     return R16_HL;
   default:
-    return -1;
+    fprintf(stderr, "[Util - r16_from_opcode] Unknown opcode: 0x%02X\n", opcode);
+    exit(EXIT_FAILURE);
   }
 }
 
@@ -240,7 +244,8 @@ r8_pair_t r8_pair_from_opcode(uint8_t opcode) {
   case 0x7F:
     return (r8_pair_t){.first_operand = R8_A, .second_operand = R8_A};
   default:
-    return (r8_pair_t){.first_operand = -1, .second_operand = -1};
+    fprintf(stderr, "[Util - r8_pair_from_opcode] Unknown opcode: 0x%02X\n", opcode);
+    exit(EXIT_FAILURE);
   }
 }
 
@@ -253,7 +258,8 @@ r8_pair_t r8_pair_from_r16(r16_t r16) {
   case R16_HL:
     return (r8_pair_t){.first_operand = R8_H, .second_operand = R8_L};
   default:
-    return (r8_pair_t){.first_operand = -1, .second_operand = -1};
+    fprintf(stderr, "[Util - r8_pair_from_r16] Unknown r16: 0x%02X\n", r16);
+    exit(EXIT_FAILURE);
   }
 }
 
@@ -276,6 +282,7 @@ uint16_t get_rst_vector(uint8_t opcode){
     case 0xFF: // RST 38H
       return 0x38;
     default:
-      return 0x00; // Default to 0x00 for invalid RST opcodes
+      fprintf(stderr, "[Util - get_rst_vector] Unknown opcode: 0x%02X\n", opcode);
+      exit(EXIT_FAILURE);
   }
 }

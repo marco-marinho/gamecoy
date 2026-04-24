@@ -3,6 +3,7 @@
 #include "instructions.h"
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 void decode_instruction(cpu_t *const restrict cpu) {
   uint8_t opcode = cpu->ram[cpu->pc];
@@ -476,8 +477,8 @@ void decode_instruction(cpu_t *const restrict cpu) {
     cpu->cycles_left = 2;
     break;
   default:
-    printf("[Decoder] Unknown opcode: 0x%02X\n", opcode);
-    break;
+    fprintf(stderr, "[Decoder] Unknown opcode: 0x%02X\n", opcode);
+    exit(EXIT_FAILURE);
   }
   execute_instruction(cpu);
 }
