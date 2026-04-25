@@ -342,3 +342,15 @@ void cb_store(cpu_t *const restrict cpu, r8_t reg, uint8_t value) {
     cpu->registers[reg] = value;
   }
 }
+
+uint8_t bit_bit(uint8_t opcode){
+  return (opcode - 0x40) / 8;
+}
+
+uint8_t bit_res(uint8_t opcode){
+  return (opcode - 0x80) / 8;
+}
+
+uint8_t bit_set(uint8_t opcode){
+  return (opcode - 0xC0) / 8;
+}

@@ -101,4 +101,13 @@ typedef enum {
   OP_MUST_FETCH_CB,
   CB_RLC_R8,
   CB_RRC_R8,
+  CB_RL_R8,
+  CB_RR_R8,
+  CB_SLA_R8,
+  CB_SRA_R8,
+  CB_SWAP_R8,
+  CB_SRL_R8,
+  CB_BIT_POS_R8,
+  CB_RES_POS_R8,
+  CB_SET_POS_R8,
 } opcode_t;

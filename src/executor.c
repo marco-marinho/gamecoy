@@ -2,6 +2,7 @@
 #include "alu.h"
 #include "bit_shift.h"
 #include "bitwise.h"
+#include "bitflag.h"
 #include "cpu.h"
 #include "instructions.h"
 #include "jumps.h"
@@ -305,6 +306,33 @@ void execute_instruction(cpu_t *const restrict cpu) {
     break;
   case CB_RRC_R8:
     rrc_r8(cpu);
+    break;
+  case CB_RL_R8:
+    rl_r8(cpu);
+    break;
+  case CB_RR_R8:
+    rr_r8(cpu);
+    break;
+  case CB_SLA_R8:
+    sla_r8(cpu);
+    break;
+  case CB_SRA_R8:
+    sra_r8(cpu);
+    break;
+  case CB_SWAP_R8:
+    swap_r8(cpu);
+    break;
+  case CB_SRL_R8:
+    srl_r8(cpu);
+    break;
+  case CB_BIT_POS_R8:
+    bit_pos_r8(cpu);
+    break;
+  case CB_RES_POS_R8:
+    res_pos_r8(cpu);
+    break;
+  case CB_SET_POS_R8:
+    set_pos_r8(cpu);
     break;
   default:
     fprintf(stderr, "[Executor] Unknown opcode: 0x%02X\n", cpu->current_opcode);

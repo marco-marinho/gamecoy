@@ -15,6 +15,7 @@ add_library(GameCoy
   src/cpu.c
   src/alu.c
   src/bit_shift.c
+  src/bitflag.c
   src/mmu.c
   src/jumps.c
   src/util.c

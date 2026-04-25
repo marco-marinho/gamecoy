@@ -61,7 +61,7 @@ TEST_CASE("SM83 Instruction JSON Tests") {
 TEST_CASE("SM83 Instruction JSON Tests - CB Prefix") {
   std::vector<std::string> testable;
   testable.reserve(0xFFFF);
-  for (int op = 0x00; op <= 0x0F; ++op) {
+  for (int op = 0x00; op <= 0xFF; ++op) {
     char hex[3];
     std::snprintf(hex, sizeof(hex), "%02x", op);
     testable.emplace_back(hex);
