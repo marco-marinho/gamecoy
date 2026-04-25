@@ -99,7 +99,7 @@ void ld_r8_imm8(cpu_t *const restrict cpu) {
   cpu->cycles_left -= 1;
 }
 
-void ld_imm16ref_sp(cpu_t *const restrict cpu) {
+void ld_ref16_sp(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 5) {
     cpu->pc += 1;
   } else if (cpu->cycles_left == 4) {
@@ -214,6 +214,9 @@ void pop_r16(cpu_t *const restrict cpu) {
     cpu->pc += 1;
   } else if (cpu->cycles_left == 2) {
     cpu->registers[cpu->second_operand] = cpu->ram[cpu->sp];
+    if (cpu->second_operand == R8_F) {
+      cpu->registers[cpu->second_operand] &= 0xF0; // Clear lower 4 bits of F
+    }
     cpu->sp += 1;
   } else if (cpu->cycles_left == 1) {
     cpu->registers[cpu->first_operand] = cpu->ram[cpu->sp];
@@ -239,7 +242,7 @@ void push_r16(cpu_t *const restrict cpu) {
   cpu->cycles_left -= 1;
 }
 
-void ldh_imm8_ref_a(cpu_t *const restrict cpu) {
+void ldh_ref8_a(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 3) {
     cpu->pc += 1;
   } else if (cpu->cycles_left == 2) {
@@ -259,6 +262,92 @@ void ldh_c_ref_a(cpu_t *const restrict cpu) {
   } else if (cpu->cycles_left == 1) {
     uint8_t offset = cpu->first_operand;
     cpu->ram[0xFF00 + offset] = cpu->registers[R8_A];
+  }
+  cpu->cycles_left -= 1;
+}
+
+void ld_ref16_a(cpu_t *const restrict cpu) {
+  if (cpu->cycles_left == 4) {
+    cpu->pc += 1;
+  } else if (cpu->cycles_left == 3) {
+    cpu->first_operand = cpu->ram[cpu->pc];
+    cpu->pc += 1;
+  } else if (cpu->cycles_left == 2) {
+    cpu->first_operand |= cpu->ram[cpu->pc] << 8;
+    cpu->pc += 1;
+  } else if (cpu->cycles_left == 1) {
+    uint16_t address = cpu->first_operand;
+    cpu->ram[address] = cpu->registers[R8_A];
+  }
+  cpu->cycles_left -= 1;
+}
+
+void ldh_a_ref8(cpu_t *const restrict cpu) {
+  if (cpu->cycles_left == 3) {
+    cpu->pc += 1;
+  } else if (cpu->cycles_left == 2) {
+    cpu->first_operand = cpu->ram[cpu->pc];
+    cpu->pc += 1;
+  } else if (cpu->cycles_left == 1) {
+    uint8_t offset = cpu->first_operand;
+    cpu->registers[R8_A] = cpu->ram[0xFF00 + offset];
+  }
+  cpu->cycles_left -= 1;
+}
+
+void ldh_a_c_ref(cpu_t *const restrict cpu) {
+  if (cpu->cycles_left == 2) {
+    cpu->first_operand = cpu->registers[R8_C];
+    cpu->pc += 1;
+  } else if (cpu->cycles_left == 1) {
+    uint8_t offset = cpu->first_operand;
+    cpu->registers[R8_A] = cpu->ram[0xFF00 + offset];
+  }
+  cpu->cycles_left -= 1;
+}
+
+void ld_hl_sp_plus_s8(cpu_t *const restrict cpu) {
+  if (cpu->cycles_left == 3) {
+    cpu->pc += 1;
+  } else if (cpu->cycles_left == 2) {
+    cpu->first_operand = cpu->ram[cpu->pc];
+    cpu->pc += 1;
+  } else if (cpu->cycles_left == 1) {
+    uint16_t sp = cpu->sp;
+    int8_t e8 = (int8_t)cpu->first_operand;
+    uint16_t result = sp + e8;
+    uint8_t half_carry =
+        OVERFLOW_FROM_BIT3((sp & 0xFF), (uint8_t)e8) ? HALF_CARRY : 0;
+    uint8_t carry = OVERFLOW_FROM_BIT7((sp & 0xFF), (uint8_t)e8) ? CARRY : 0;
+    cpu->registers[R8_F] = half_carry | carry;
+    store_r16(cpu, R16_HL, result);
+  }
+  cpu->cycles_left -= 1;
+}
+
+void ld_sp_hl(cpu_t *const restrict cpu) {
+  if (cpu->cycles_left == 2) {
+    uint16_t hl = read_r16(cpu, R16_HL);
+    cpu->first_operand = hl;
+    cpu->pc += 1;
+  } else if (cpu->cycles_left == 1) {
+    cpu->sp = cpu->first_operand;
+  }
+  cpu->cycles_left -= 1;
+}
+
+void ld_a_ref16(cpu_t *const restrict cpu) {
+  if (cpu->cycles_left == 4) {
+    cpu->pc += 1;
+  } else if (cpu->cycles_left == 3) {
+    cpu->first_operand = cpu->ram[cpu->pc];
+    cpu->pc += 1;
+  } else if (cpu->cycles_left == 2) {
+    cpu->first_operand |= cpu->ram[cpu->pc] << 8;
+    cpu->pc += 1;
+  } else if (cpu->cycles_left == 1) {
+    uint16_t address = cpu->first_operand;
+    cpu->registers[R8_A] = cpu->ram[address];
   }
   cpu->cycles_left -= 1;
 }

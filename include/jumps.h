@@ -18,6 +18,7 @@ void jp_imm16(cpu_t * const restrict cpu);
 void jp_z_imm16(cpu_t * const restrict cpu);
 void jp_nc_imm16(cpu_t * const restrict cpu);
 void jp_c_imm16(cpu_t * const restrict cpu);
+void jp_hl(cpu_t * const restrict cpu);
 void call_nz_imm16(cpu_t * const restrict cpu);
 void call_z_imm16(cpu_t * const restrict cpu);
 void call_imm16(cpu_t * const restrict cpu);

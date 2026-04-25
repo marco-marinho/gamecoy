@@ -3,9 +3,17 @@
 version: '3'
 
 tasks:
-  build-test:
+  
+  build:
+    desc: Build the project
+    cmds:
+      - cmake -B build -DCMAKE_BUILD_TYPE=Release -G Ninja
+      - cmake --build build
+    silent: true
+
+  test:
+    deps: [build]
     desc: Build the project and run tests 
     cmds:
-      - cmake --build build
-      - ./build/json_tests -d
+      - ./build/cpu_tests -d
     silent: true

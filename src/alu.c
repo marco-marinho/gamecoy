@@ -382,3 +382,36 @@ void sbc_a_imm8(cpu_t *const restrict cpu) {
   cpu->pc += 1;
   cpu->cycles_left -= 1;
 }
+
+void add_sp_s8(cpu_t *const restrict cpu) {
+  if (cpu->cycles_left == 4) {
+    cpu->pc += 1;
+  } else if (cpu->cycles_left == 3) {
+    cpu->first_operand = cpu->ram[cpu->pc];
+  } else if (cpu->cycles_left == 2) {
+  } else if (cpu->cycles_left == 1) {
+    uint16_t sp = cpu->sp;
+    int8_t value = (int8_t)cpu->ram[cpu->pc];
+    uint16_t result = sp + value;
+    cpu->sp = result;
+    uint8_t half_carry = OVERFLOW_FROM_BIT3((sp & 0xFF), (uint8_t)value) ? HALF_CARRY : 0;
+    uint8_t carry = OVERFLOW_FROM_BIT7((sp & 0xFF), (uint8_t)value) ? CARRY : 0;
+    cpu->registers[R8_F] = half_carry | carry;
+    cpu->pc += 1;
+  }
+  cpu->cycles_left -= 1;
+}
+
+void cp_a_imm8(cpu_t *const restrict cpu) {
+  if (cpu->cycles_left == 1) {
+    uint8_t a = cpu->registers[R8_A];
+    uint8_t value = cpu->ram[cpu->pc];
+    uint8_t result = a - value;
+    uint8_t half_carry = UNDERFLOW_FROM_BIT3(a, value) ? HALF_CARRY : 0;
+    uint8_t carry = UNDERFLOW_FROM_BIT7(a, value) ? CARRY : 0;
+    uint8_t zero = result == 0 ? ZERO : 0;
+    cpu->registers[R8_F] = zero | half_carry | carry | SUBTRACT;
+  }
+  cpu->pc += 1;
+  cpu->cycles_left -= 1;
+}

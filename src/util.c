@@ -137,6 +137,9 @@ r16_t r16_from_opcode(uint8_t opcode) {
   case 0xE1: // POP HL
   case 0xE5: // PUSH HL
     return R16_HL;
+  case 0xF1: // POP AF
+  case 0xF5: // PUSH AF
+    return R16_AF;
   default:
     fprintf(stderr, "[Util - r16_from_opcode] Unknown opcode: 0x%02X\n", opcode);
     exit(EXIT_FAILURE);
@@ -257,6 +260,8 @@ r8_pair_t r8_pair_from_r16(r16_t r16) {
     return (r8_pair_t){.first_operand = R8_D, .second_operand = R8_E};
   case R16_HL:
     return (r8_pair_t){.first_operand = R8_H, .second_operand = R8_L};
+  case R16_AF:
+    return (r8_pair_t){.first_operand = R8_A, .second_operand = R8_F};
   default:
     fprintf(stderr, "[Util - r8_pair_from_r16] Unknown r16: 0x%02X\n", r16);
     exit(EXIT_FAILURE);

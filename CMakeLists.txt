@@ -25,28 +25,30 @@ target_include_directories(GameCoy
   PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-add_executable(json_tests
-  tests/json_tests.cpp)
+add_executable(cpu_tests
+  tests/src/cpu_tests.cpp
+  tests/src/test_utils.cpp)
 
-target_include_directories(json_tests
+target_include_directories(cpu_tests
   PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/include
   ${CMAKE_CURRENT_SOURCE_DIR}/external/json/single_include
-  ${CMAKE_CURRENT_SOURCE_DIR}/external/doctest/doctest)
+  ${CMAKE_CURRENT_SOURCE_DIR}/external/doctest/doctest
+  ${CMAKE_CURRENT_SOURCE_DIR}/tests/include)
 
-target_link_libraries(json_tests
+target_link_libraries(cpu_tests
   PRIVATE
   GameCoy)
 
 if(ipo_supported)
     message(STATUS "LTO/IPO is supported and enabled.")
     set_target_properties(GameCoy PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
-    set_target_properties(json_tests PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
+    set_target_properties(cpu_tests PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
 else()
     message(WARNING "LTO/IPO not supported: ${error}")
 endif()
 
 enable_testing()
-add_test(NAME json_tests COMMAND json_tests)
-set_tests_properties(json_tests PROPERTIES
+add_test(NAME cpu_tests COMMAND cpu_tests)
+set_tests_properties(cpu_tests PROPERTIES
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})

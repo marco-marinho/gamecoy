@@ -64,7 +64,7 @@ void decode_instruction(cpu_t *const restrict cpu) {
     cpu->cycles_left = 1;
     break;
   case 0x08: // LD (a16), SP
-    cpu->current_opcode = OP_LD_IMM16REF_SP;
+    cpu->current_opcode = OP_LD_REF16_SP;
     cpu->cycles_left = 5;
     break;
   case 0x09: // ADD HL, BC
@@ -394,6 +394,7 @@ void decode_instruction(cpu_t *const restrict cpu) {
   case 0xC5: // PUSH BC
   case 0xD5: // PUSH DE
   case 0xE5: // PUSH HL
+  case 0xF5: // PUSH AF
     cpu->current_opcode = OP_PUSH_R16;
     cpu->cycles_left = 4;
     break;
@@ -405,6 +406,10 @@ void decode_instruction(cpu_t *const restrict cpu) {
   case 0xCF: // RST 08H
   case 0xD7: // RST 10H
   case 0xDF: // RST 18H
+  case 0xE7: // RST 20H
+  case 0xEF: // RST 28H
+  case 0xF7: // RST 30H
+  case 0xFF: // RST 38H
     cpu->current_opcode = OP_RST;
     cpu->cycles_left = 4;
     break;
@@ -469,11 +474,67 @@ void decode_instruction(cpu_t *const restrict cpu) {
     cpu->cycles_left = 2;
     break;
   case 0xE0: // LDH (a8), A
-    cpu->current_opcode = OP_LDH_IMM8_REF_A;
+    cpu->current_opcode = OP_LDH_REF8_A;
     cpu->cycles_left = 3;
     break;
   case 0xE2: // LDH (C), A
     cpu->current_opcode = OP_LDH_C_REF_A;
+    cpu->cycles_left = 2;
+    break;
+  case 0xE6: // AND A, d8
+    cpu->current_opcode = OP_AND_A_IMM8;
+    cpu->cycles_left = 2;
+    break;
+  case 0xE8: // ADD SP, r8
+    cpu->current_opcode = OP_ADD_SP_S8;
+    cpu->cycles_left = 4;
+    break;
+  case 0xE9: // JP (HL)
+    cpu->current_opcode = OP_JP_HL;
+    cpu->cycles_left = 1;
+    break;
+  case 0xEA: // LD (a16), A
+    cpu->current_opcode = OP_LD_REF16_A;
+    cpu->cycles_left = 4;
+    break;
+  case 0xEE: // XOR A, d8
+    cpu->current_opcode = OP_XOR_A_IMM8;
+    cpu->cycles_left = 2;
+    break;
+  case 0xF0: // LDH A, (a8)
+    cpu->current_opcode = OP_LDH_A_REF8;
+    cpu->cycles_left = 3;
+    break;
+  case 0xF2: // LDH A, (C)
+    cpu->current_opcode = OP_LDH_A_C_REF;
+    cpu->cycles_left = 2;
+    break;
+  case 0xF3: // DI
+    cpu->current_opcode = OP_DI;
+    cpu->cycles_left = 1;
+    break;
+  case 0xF6: // OR A, d8
+    cpu->current_opcode = OP_OR_A_IMM8;
+    cpu->cycles_left = 2;
+    break;
+  case 0xF8: // LD HL, SP+r8
+    cpu->current_opcode = OP_LD_HL_SP_PLUS_S8;
+    cpu->cycles_left = 3;
+    break;
+  case 0xF9: // LD SP, HL
+    cpu->current_opcode = OP_LD_SP_HL;
+    cpu->cycles_left = 2;
+    break;
+  case 0xFA: // LD A, (a16)
+    cpu->current_opcode = OP_LD_A_REF16;
+    cpu->cycles_left = 4;
+    break;
+  case 0xFB: // EI
+    cpu->current_opcode = OP_EI;
+    cpu->cycles_left = 1;
+    break;
+  case 0xFE: // CP A, d8
+    cpu->current_opcode = OP_CP_A_IMM8;
     cpu->cycles_left = 2;
     break;
   default:

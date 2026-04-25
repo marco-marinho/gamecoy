@@ -113,3 +113,42 @@ void cp_a_hl_ref(cpu_t *const restrict cpu) {
   }
   cpu->cycles_left -= 1;
 }
+
+void and_a_imm8(cpu_t *const restrict cpu) {
+  if (cpu->cycles_left == 1) {
+    uint8_t a = cpu->registers[R8_A];
+    uint8_t value = cpu->ram[cpu->pc];
+    uint8_t result = a & value;
+    cpu->registers[R8_A] = result;
+    uint8_t zero = result == 0 ? ZERO : 0;
+    cpu->registers[R8_F] = zero | HALF_CARRY;
+  }
+  cpu->pc += 1;
+  cpu->cycles_left -= 1;
+}
+
+void xor_a_imm8(cpu_t *const restrict cpu) {
+  if (cpu->cycles_left == 1) {
+    uint8_t a = cpu->registers[R8_A];
+    uint8_t value = cpu->ram[cpu->pc];
+    uint8_t result = a ^ value;
+    cpu->registers[R8_A] = result;
+    uint8_t zero = result == 0 ? ZERO : 0;
+    cpu->registers[R8_F] = zero;
+  }
+  cpu->pc += 1;
+  cpu->cycles_left -= 1;
+}
+
+void or_a_imm8(cpu_t *const restrict cpu) {
+  if (cpu->cycles_left == 1) {
+    uint8_t a = cpu->registers[R8_A];
+    uint8_t value = cpu->ram[cpu->pc];
+    uint8_t result = a | value;
+    cpu->registers[R8_A] = result;
+    uint8_t zero = result == 0 ? ZERO : 0;
+    cpu->registers[R8_F] = zero;
+  }
+  cpu->pc += 1;
+  cpu->cycles_left -= 1;
+}

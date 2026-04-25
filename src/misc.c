@@ -69,3 +69,15 @@ void ccf(cpu_t *const restrict cpu) {
   cpu->pc += 1;
   cpu->cycles_left -= 1;
 }
+
+void di(cpu_t *const restrict cpu) {
+  cpu->ime = 0;
+  cpu->pc += 1;
+  cpu->cycles_left -= 1;
+}
+
+void ei(cpu_t *const restrict cpu) {
+  cpu->ie_delay = 2;
+  cpu->pc += 1;
+  cpu->cycles_left -= 1;
+}

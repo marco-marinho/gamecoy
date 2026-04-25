@@ -1,5 +1,6 @@
 #include "cpu.h"
 #include "util.h"
+#include "mmu.h"
 
 void jr_s8(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 3) {
@@ -237,5 +238,10 @@ void rst(cpu_t * const restrict cpu){
   } else if (cpu->cycles_left == 1){
     cpu->pc = cpu->first_operand;
   }
+  cpu->cycles_left -= 1;
+}
+
+void jp_hl(cpu_t * const restrict cpu) {
+  cpu->pc = read_r16(cpu, R16_HL);
   cpu->cycles_left -= 1;
 }

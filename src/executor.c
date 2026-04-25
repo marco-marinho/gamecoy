@@ -36,8 +36,8 @@ void execute_instruction(cpu_t *const restrict cpu) {
   case OP_RLCA:
     rlca(cpu);
     break;
-  case OP_LD_IMM16REF_SP:
-    ld_imm16ref_sp(cpu);
+  case OP_LD_REF16_SP:
+    ld_ref16_sp(cpu);
     break;
   case OP_ADD_HL_R16:
     add_hl_r16(cpu);
@@ -249,11 +249,53 @@ void execute_instruction(cpu_t *const restrict cpu) {
   case OP_SBC_A_IMM8:
     sbc_a_imm8(cpu);
     break;
-  case OP_LDH_IMM8_REF_A:
-    ldh_imm8_ref_a(cpu);
+  case OP_LDH_REF8_A:
+    ldh_ref8_a(cpu);
     break;
   case OP_LDH_C_REF_A:
     ldh_c_ref_a(cpu);
+    break;
+  case OP_AND_A_IMM8:
+    and_a_imm8(cpu);
+    break;
+  case OP_ADD_SP_S8:
+    add_sp_s8(cpu);
+    break;
+  case OP_JP_HL:
+    jp_hl(cpu);
+    break;
+  case OP_LD_REF16_A:
+    ld_ref16_a(cpu);
+    break;
+  case OP_XOR_A_IMM8:
+    xor_a_imm8(cpu);
+    break;
+  case OP_LDH_A_REF8:
+    ldh_a_ref8(cpu);
+    break;
+  case OP_LDH_A_C_REF:
+    ldh_a_c_ref(cpu);
+    break;
+  case OP_DI:
+    di(cpu);
+    break;
+  case OP_OR_A_IMM8:
+    or_a_imm8(cpu);
+    break;
+  case OP_LD_HL_SP_PLUS_S8:
+    ld_hl_sp_plus_s8(cpu);
+    break;
+  case OP_LD_SP_HL:
+    ld_sp_hl(cpu);
+    break;
+  case OP_LD_A_REF16:
+    ld_a_ref16(cpu);
+    break;
+  case OP_EI:
+    ei(cpu);
+    break;
+  case OP_CP_A_IMM8:
+    cp_a_imm8(cpu);
     break;
   default:
     fprintf(stderr, "[Executor] Unknown opcode: 0x%02X\n", cpu->current_opcode);
