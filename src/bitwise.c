@@ -10,7 +10,8 @@ void cpl(cpu_t *const restrict cpu) {
 }
 
 void and_a_r8(cpu_t *const restrict cpu) {
-  r8_t target_reg = r8_from_opcode(cpu->ram[cpu->pc]);
+  uint8_t memory_value = bus_read(cpu, cpu->pc);
+  r8_t target_reg = r8_from_opcode(memory_value);
   uint8_t a = cpu->registers[R8_A];
   uint8_t value = cpu->registers[target_reg];
   uint8_t result = a & value;
@@ -23,7 +24,7 @@ void and_a_r8(cpu_t *const restrict cpu) {
 
 void and_a_hl_ref(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 2) {
-    cpu->first_operand = cpu->ram[read_r16(cpu, R16_HL)];
+    cpu->first_operand = bus_read(cpu, read_r16(cpu, R16_HL));
     cpu->pc += 1;
   } else if (cpu->cycles_left == 1) {
     uint8_t a = cpu->registers[R8_A];
@@ -36,7 +37,8 @@ void and_a_hl_ref(cpu_t *const restrict cpu) {
 }
 
 void xor_a_r8(cpu_t *const restrict cpu) {
-  r8_t target_reg = r8_from_opcode(cpu->ram[cpu->pc]);
+  uint8_t memory_value = bus_read(cpu, cpu->pc);
+  r8_t target_reg = r8_from_opcode(memory_value);
   uint8_t a = cpu->registers[R8_A];
   uint8_t value = cpu->registers[target_reg];
   uint8_t result = a ^ value;
@@ -49,7 +51,7 @@ void xor_a_r8(cpu_t *const restrict cpu) {
 
 void xor_a_hl_ref(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 2) {
-    cpu->first_operand = cpu->ram[read_r16(cpu, R16_HL)];
+    cpu->first_operand = bus_read(cpu, read_r16(cpu, R16_HL));
     cpu->pc += 1;
   } else if (cpu->cycles_left == 1) {
     uint8_t a = cpu->registers[R8_A];
@@ -62,7 +64,8 @@ void xor_a_hl_ref(cpu_t *const restrict cpu) {
 }
 
 void or_a_r8(cpu_t *const restrict cpu) {
-  r8_t target_reg = r8_from_opcode(cpu->ram[cpu->pc]);
+  uint8_t memory_value = bus_read(cpu, cpu->pc);
+  r8_t target_reg = r8_from_opcode(memory_value);
   uint8_t a = cpu->registers[R8_A];
   uint8_t value = cpu->registers[target_reg];
   uint8_t result = a | value;
@@ -75,7 +78,7 @@ void or_a_r8(cpu_t *const restrict cpu) {
 
 void or_a_hl_ref(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 2) {
-    cpu->first_operand = cpu->ram[read_r16(cpu, R16_HL)];
+    cpu->first_operand = bus_read(cpu, read_r16(cpu, R16_HL));
     cpu->pc += 1;
   } else if (cpu->cycles_left == 1) {
     uint8_t a = cpu->registers[R8_A];
@@ -88,7 +91,8 @@ void or_a_hl_ref(cpu_t *const restrict cpu) {
 }
 
 void cp_a_r8(cpu_t *const restrict cpu) {
-  r8_t target_reg = r8_from_opcode(cpu->ram[cpu->pc]);
+  uint8_t memory_value = bus_read(cpu, cpu->pc);
+  r8_t target_reg = r8_from_opcode(memory_value);
   uint8_t a = cpu->registers[R8_A];
   uint8_t value = cpu->registers[target_reg];
   uint8_t half_carry = UNDERFLOW_FROM_BIT3(a, value) ? HALF_CARRY : 0;
@@ -101,7 +105,7 @@ void cp_a_r8(cpu_t *const restrict cpu) {
 
 void cp_a_hl_ref(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 2) {
-    cpu->first_operand = cpu->ram[read_r16(cpu, R16_HL)];
+    cpu->first_operand = bus_read(cpu, read_r16(cpu, R16_HL));
     cpu->pc += 1;
   } else if (cpu->cycles_left == 1) {
     uint8_t a = cpu->registers[R8_A];
@@ -117,7 +121,7 @@ void cp_a_hl_ref(cpu_t *const restrict cpu) {
 void and_a_imm8(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 1) {
     uint8_t a = cpu->registers[R8_A];
-    uint8_t value = cpu->ram[cpu->pc];
+    uint8_t value = bus_read(cpu, cpu->pc);
     uint8_t result = a & value;
     cpu->registers[R8_A] = result;
     uint8_t zero = result == 0 ? ZERO : 0;
@@ -130,7 +134,7 @@ void and_a_imm8(cpu_t *const restrict cpu) {
 void xor_a_imm8(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 1) {
     uint8_t a = cpu->registers[R8_A];
-    uint8_t value = cpu->ram[cpu->pc];
+    uint8_t value = bus_read(cpu, cpu->pc);
     uint8_t result = a ^ value;
     cpu->registers[R8_A] = result;
     uint8_t zero = result == 0 ? ZERO : 0;
@@ -143,7 +147,7 @@ void xor_a_imm8(cpu_t *const restrict cpu) {
 void or_a_imm8(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 1) {
     uint8_t a = cpu->registers[R8_A];
-    uint8_t value = cpu->ram[cpu->pc];
+    uint8_t value = bus_read(cpu, cpu->pc);
     uint8_t result = a | value;
     cpu->registers[R8_A] = result;
     uint8_t zero = result == 0 ? ZERO : 0;

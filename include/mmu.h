@@ -2,6 +2,11 @@
 
 #include "cpu.h"
 
+#define TIMER_DIVIDER (0xFF04)
+#define TIMER_COUNTER (0xFF05)
+#define TIMER_MODULO (0xFF06)
+#define TIMER_CONTROL (0xFF07)
+
 uint16_t read_r16(cpu_t *const restrict cpu, r16_t r16);
 void store_r16(cpu_t *const restrict cpu, r16_t r16, uint16_t value);
 void store_r8(cpu_t *const restrict cpu, r8_t r8, uint8_t value);
@@ -29,3 +34,5 @@ void ldh_a_c_ref(cpu_t *const restrict cpu);
 void ld_hl_sp_plus_s8(cpu_t *const restrict cpu);
 void ld_sp_hl(cpu_t *const restrict cpu);
 void ld_a_ref16(cpu_t *const restrict cpu);
+void bus_write(cpu_t *const restrict cpu, uint16_t address, uint8_t value);
+uint8_t bus_read(cpu_t *const restrict cpu, uint16_t address);

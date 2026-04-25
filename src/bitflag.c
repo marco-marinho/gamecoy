@@ -1,10 +1,12 @@
 #include "cpu.h"
 #include "util.h"
+#include "mmu.h"
 
 void bit_pos_r8(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 1) {
-    r8_t reg = r8_from_cb_opcode(cpu->ram[cpu->pc]);
-    uint8_t bit_pos = bit_bit(cpu->ram[cpu->pc]);
+    uint8_t memory_value = bus_read(cpu, cpu->pc);
+    r8_t reg = r8_from_cb_opcode(memory_value);
+    uint8_t bit_pos = bit_bit(memory_value);
     uint8_t value = cb_load(cpu, reg);
     uint8_t bit_value = (value >> bit_pos) & 0x01;
     uint8_t zero_flag = bit_value == 0 ? ZERO : 0;
@@ -17,8 +19,9 @@ void bit_pos_r8(cpu_t *const restrict cpu) {
 
 void res_pos_r8(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 1) {
-    r8_t reg = r8_from_cb_opcode(cpu->ram[cpu->pc]);
-    uint8_t bit_pos = bit_res(cpu->ram[cpu->pc]);
+    uint8_t memory_value = bus_read(cpu, cpu->pc);
+    r8_t reg = r8_from_cb_opcode(memory_value);
+    uint8_t bit_pos = bit_res(memory_value);
     uint8_t value = cb_load(cpu, reg);
     uint8_t mask = ~(1 << bit_pos);
     uint8_t result = value & mask;
@@ -30,8 +33,9 @@ void res_pos_r8(cpu_t *const restrict cpu) {
 
 void set_pos_r8(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 1) {
-    r8_t reg = r8_from_cb_opcode(cpu->ram[cpu->pc]);
-    uint8_t bit_pos = bit_set(cpu->ram[cpu->pc]);
+    uint8_t memory_value = bus_read(cpu, cpu->pc);
+    r8_t reg = r8_from_cb_opcode(memory_value);
+    uint8_t bit_pos = bit_set(memory_value);
     uint8_t value = cb_load(cpu, reg);
     uint8_t mask = 1 << bit_pos;
     uint8_t result = value | mask;

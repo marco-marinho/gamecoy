@@ -1,5 +1,6 @@
 #include "util.h"
 #include "cpu.h"
+#include "mmu.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -329,7 +330,7 @@ r8_t r8_from_cb_opcode(uint8_t opcode) {
 
 uint8_t cb_load(cpu_t *const restrict cpu, r8_t reg) {
   if (reg == HL_REF) {
-    return cpu->ram[(cpu->registers[R8_H] << 8) | cpu->registers[R8_L]];
+    return bus_read(cpu, (cpu->registers[R8_H] << 8) | cpu->registers[R8_L]);
   } else {
     return cpu->registers[reg];
   }
@@ -337,7 +338,7 @@ uint8_t cb_load(cpu_t *const restrict cpu, r8_t reg) {
 
 void cb_store(cpu_t *const restrict cpu, r8_t reg, uint8_t value) {
   if (reg == HL_REF) {
-    cpu->ram[(cpu->registers[R8_H] << 8) | cpu->registers[R8_L]] = value;
+    bus_write(cpu, (cpu->registers[R8_H] << 8) | cpu->registers[R8_L], value);
   } else {
     cpu->registers[reg] = value;
   }

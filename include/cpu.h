@@ -16,7 +16,7 @@ typedef struct {
   uint16_t pc;
   uint16_t sp;
   uint8_t registers[9];
-  uint8_t ram[65536];
+  uint8_t _ram[65536];
   uint8_t halted;
   opcode_t current_opcode;
   uint16_t first_operand;
@@ -24,6 +24,7 @@ typedef struct {
   uint8_t cycles_left;
   uint8_t ie_delay;
   uint8_t ime;
+  uint8_t _div_counter;
 } cpu_t;
 
 typedef enum {

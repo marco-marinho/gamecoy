@@ -6,7 +6,7 @@ void jr_s8(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 3) {
     cpu->pc += 1;
   } else if (cpu->cycles_left == 2) {
-    cpu->first_operand = (int8_t)cpu->ram[cpu->pc];
+    cpu->first_operand = (int8_t)bus_read(cpu, cpu->pc);
     cpu->pc += 1;
   } else if (cpu->cycles_left == 1) {
     cpu->pc += cpu->first_operand;
@@ -24,7 +24,7 @@ void jr_nz_s8(cpu_t *const restrict cpu) {
       cpu->pc += 1;
     }
   } else if (cpu->cycles_left == 1) {
-    cpu->pc += (int8_t)cpu->ram[cpu->pc];
+    cpu->pc += (int8_t)bus_read(cpu, cpu->pc);
     cpu->pc += 1;
   }
   cpu->cycles_left -= 1;
@@ -40,7 +40,7 @@ void jr_nc_s8(cpu_t *const restrict cpu) {
       cpu->pc += 1;
     }
   } else if (cpu->cycles_left == 1) {
-    cpu->pc += (int8_t)cpu->ram[cpu->pc];
+    cpu->pc += (int8_t)bus_read(cpu, cpu->pc);
     cpu->pc += 1;
   }
   cpu->cycles_left -= 1;
@@ -56,7 +56,7 @@ void jr_z_s8(cpu_t *const restrict cpu) {
       cpu->pc += 1;
     }
   } else if (cpu->cycles_left == 1) {
-    cpu->pc += (int8_t)cpu->ram[cpu->pc];
+    cpu->pc += (int8_t)bus_read(cpu, cpu->pc);
     cpu->pc += 1;
   }
   cpu->cycles_left -= 1;
@@ -72,7 +72,7 @@ void jr_c_s8(cpu_t *const restrict cpu) {
       cpu->pc += 1;
     }
   } else if (cpu->cycles_left == 1) {
-    cpu->pc += (int8_t)cpu->ram[cpu->pc];
+    cpu->pc += (int8_t)bus_read(cpu, cpu->pc);
     cpu->pc += 1;
   }
   cpu->cycles_left -= 1;
@@ -85,14 +85,14 @@ void ret_cc(cpu_t *const restrict cpu, uint8_t flag) {
       cpu->cycles_left = 1;
     }
     else {
-      cpu->pc = cpu->ram[cpu->sp] & 0xFF;
+      cpu->pc = bus_read(cpu, cpu->sp) & 0xFF;
     }
   }
   else if (cpu->cycles_left == 3){
     cpu->sp += 1;
   }
   else if (cpu->cycles_left == 2){
-    cpu->pc |= (cpu->ram[cpu->sp] << 8);
+    cpu->pc |= (bus_read(cpu, cpu->sp) << 8);
   }
   else if (cpu->cycles_left == 1){
     cpu->sp += 1;
@@ -132,10 +132,10 @@ void reti(cpu_t *const restrict cpu) {
 void jp_cc_imm16(cpu_t * const restrict cpu, uint8_t flag) {
   if (cpu->cycles_left == 4){
     cpu->pc += 1;
-    cpu->first_operand = cpu->ram[cpu->pc];
+    cpu->first_operand = bus_read(cpu, cpu->pc);
   } else if (cpu->cycles_left == 3){
     cpu->pc += 1;
-    cpu->second_operand = cpu->ram[cpu->pc];
+    cpu->second_operand = bus_read(cpu, cpu->pc);
   } else if (cpu->cycles_left == 2){
     if(!flag){
       cpu->pc += 1;
@@ -177,10 +177,10 @@ void jp_c_imm16(cpu_t * const restrict cpu) {
 void call_cc_imm16(cpu_t * const restrict cpu, uint8_t flag){
   if (cpu->cycles_left == 6){
     cpu->pc += 1;
-    cpu->first_operand = cpu->ram[cpu->pc];
+    cpu->first_operand = bus_read(cpu, cpu->pc);
   } else if (cpu->cycles_left == 5){
     cpu->pc += 1;
-    cpu->second_operand = cpu->ram[cpu->pc];
+    cpu->second_operand = bus_read(cpu, cpu->pc);
   } else if (cpu->cycles_left == 4){
     cpu->pc += 1;
     if(!flag){
@@ -188,11 +188,12 @@ void call_cc_imm16(cpu_t * const restrict cpu, uint8_t flag){
     }
     else {
       cpu->sp -= 1;
-      cpu->ram[cpu->sp] = (cpu->pc >> 8);
+      bus_write(cpu, cpu->sp, (cpu->pc >> 8));
     }
   } else if (cpu->cycles_left == 3){
     cpu->sp -= 1;
-    cpu->ram[cpu->sp] |= cpu->pc & 0xFF;
+    uint8_t low_pc = bus_read(cpu, cpu->sp);
+    bus_write(cpu, cpu->sp, low_pc | (cpu->pc & 0xFF));
   } else if (cpu->cycles_left == 2){
     cpu->pc = cpu->first_operand;
   } else if (cpu->cycles_left == 1){
@@ -227,14 +228,15 @@ void call_c_imm16(cpu_t * const restrict cpu) {
 
 void rst(cpu_t * const restrict cpu){
   if (cpu->cycles_left == 4){
-    cpu->first_operand = get_rst_vector(cpu->ram[cpu->pc]);
+    cpu->first_operand = get_rst_vector(bus_read(cpu, cpu->pc));
     cpu->pc += 1;
   } else if (cpu->cycles_left == 3){
     cpu->sp -= 1;
-    cpu->ram[cpu->sp] = (cpu->pc >> 8);
+    bus_write(cpu, cpu->sp, (cpu->pc >> 8));
   } else if (cpu->cycles_left == 2){
     cpu->sp -= 1;
-    cpu->ram[cpu->sp] |= cpu->pc & 0xFF;
+    uint8_t low_pc = bus_read(cpu, cpu->sp);
+    bus_write(cpu, cpu->sp, low_pc | (cpu->pc & 0xFF));
   } else if (cpu->cycles_left == 1){
     cpu->pc = cpu->first_operand;
   }

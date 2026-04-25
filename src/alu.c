@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 void inc_r8(cpu_t *const restrict cpu) {
-  r8_t target = r8_from_opcode(cpu->ram[cpu->pc]);
+  r8_t target = r8_from_opcode(bus_read(cpu, cpu->pc));
   uint8_t old = cpu->registers[target];
   uint8_t new = old + 1;
   uint8_t half_carry = OVERFLOW_FROM_BIT3(old, 1) ? HALF_CARRY : 0;
@@ -17,7 +17,7 @@ void inc_r8(cpu_t *const restrict cpu) {
 }
 
 void dec_r8(cpu_t *const restrict cpu) {
-  r8_t target = r8_from_opcode(cpu->ram[cpu->pc]);
+  r8_t target = r8_from_opcode(bus_read(cpu, cpu->pc));
   uint8_t old = cpu->registers[target];
   uint8_t new = old - 1;
   uint8_t half_carry = UNDERFLOW_FROM_BIT3(old, 1) ? HALF_CARRY : 0;
@@ -31,7 +31,7 @@ void dec_r8(cpu_t *const restrict cpu) {
 
 void add_hl_r16(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 2) {
-    cpu->first_operand = r16_from_opcode(cpu->ram[cpu->pc]);
+    cpu->first_operand = r16_from_opcode(bus_read(cpu, cpu->pc));
     cpu->pc += 1;
   } else if (cpu->cycles_left == 1) {
     uint16_t hl = read_r16(cpu, R16_HL);
@@ -47,7 +47,7 @@ void add_hl_r16(cpu_t *const restrict cpu) {
 
 void inc_r16(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 2) {
-    cpu->first_operand = r16_from_opcode(cpu->ram[cpu->pc]);
+    cpu->first_operand = r16_from_opcode(bus_read(cpu, cpu->pc));
     cpu->pc += 1;
   } else if (cpu->cycles_left == 1) {
     uint16_t value = read_r16(cpu, cpu->first_operand);
@@ -58,7 +58,7 @@ void inc_r16(cpu_t *const restrict cpu) {
 
 void dec_r16(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 2) {
-    cpu->first_operand = r16_from_opcode(cpu->ram[cpu->pc]);
+    cpu->first_operand = r16_from_opcode(bus_read(cpu, cpu->pc));
     cpu->pc += 1;
   } else if (cpu->cycles_left == 1) {
     uint16_t current = read_r16(cpu, cpu->first_operand);
@@ -79,13 +79,13 @@ void inc_sp(cpu_t *const restrict cpu) {
 void inc_hl_ref(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 2) {
     uint16_t hl = read_r16(cpu, R16_HL);
-    cpu->first_operand = cpu->ram[hl];
+    cpu->first_operand = bus_read(cpu, hl);
     cpu->pc += 1;
   } else if (cpu->cycles_left == 1) {
     uint8_t old = cpu->first_operand;
     uint8_t new = old + 1;
     uint8_t half_carry = OVERFLOW_FROM_BIT3(old, 1) ? HALF_CARRY : 0;
-    cpu->ram[read_r16(cpu, R16_HL)] = new;
+    bus_write(cpu, read_r16(cpu, R16_HL), new);
     uint8_t zero = new == 0 ? ZERO : 0;
     uint8_t current_carry = cpu->registers[R8_F] & CARRY ? CARRY : 0;
     cpu->registers[R8_F] = zero | half_carry | current_carry;
@@ -96,13 +96,13 @@ void inc_hl_ref(cpu_t *const restrict cpu) {
 void dec_hl_ref(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 2) {
     uint16_t hl = read_r16(cpu, R16_HL);
-    cpu->first_operand = cpu->ram[hl];
+    cpu->first_operand = bus_read(cpu, hl);
     cpu->pc += 1;
   } else if (cpu->cycles_left == 1) {
     uint8_t old = cpu->first_operand;
     uint8_t new = old - 1;
     uint8_t half_carry = UNDERFLOW_FROM_BIT3(old, 1) ? HALF_CARRY : 0;
-    cpu->ram[read_r16(cpu, R16_HL)] = new;
+    bus_write(cpu, read_r16(cpu, R16_HL), new);
     uint8_t zero = new == 0 ? ZERO : 0;
     uint8_t current_carry = cpu->registers[R8_F] & CARRY ? CARRY : 0;
     cpu->registers[R8_F] = zero | SUBTRACT | half_carry | current_carry;
@@ -134,7 +134,7 @@ void dec_sp(cpu_t *const restrict cpu) {
 }
 
 void add_a_r8(cpu_t *const restrict cpu) {
-  r8_t target_reg = r8_from_opcode(cpu->ram[cpu->pc]);
+  r8_t target_reg = r8_from_opcode(bus_read(cpu, cpu->pc));
   uint8_t a = cpu->registers[R8_A];
   uint8_t value = cpu->registers[target_reg];
   uint8_t result = a + value;
@@ -149,7 +149,7 @@ void add_a_r8(cpu_t *const restrict cpu) {
 
 void add_a_hl_ref(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 2) {
-    cpu->first_operand = cpu->ram[read_r16(cpu, R16_HL)];
+    cpu->first_operand = bus_read(cpu, read_r16(cpu, R16_HL));
     cpu->pc += 1;
   } else if (cpu->cycles_left == 1) {
     uint8_t a = cpu->registers[R8_A];
@@ -165,7 +165,7 @@ void add_a_hl_ref(cpu_t *const restrict cpu) {
 }
 
 void adc_a_r8(cpu_t *const restrict cpu) {
-  r8_t target_reg = r8_from_opcode(cpu->ram[cpu->pc]);
+  r8_t target_reg = r8_from_opcode(bus_read(cpu, cpu->pc));
   uint8_t a = cpu->registers[R8_A];
   uint8_t value = cpu->registers[target_reg];
   uint8_t carry_in = cpu->registers[R8_F] & CARRY ? 1 : 0;
@@ -191,7 +191,7 @@ void adc_a_r8(cpu_t *const restrict cpu) {
 
 void adc_a_hl_ref(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 2) {
-    cpu->first_operand = cpu->ram[read_r16(cpu, R16_HL)];
+    cpu->first_operand = bus_read(cpu, read_r16(cpu, R16_HL));
     cpu->pc += 1;
   } else if (cpu->cycles_left == 1) {
     uint8_t a = cpu->registers[R8_A];
@@ -218,7 +218,7 @@ void adc_a_hl_ref(cpu_t *const restrict cpu) {
 }
 
 void sub_a_r8(cpu_t *const restrict cpu) {
-  r8_t target_reg = r8_from_opcode(cpu->ram[cpu->pc]);
+  r8_t target_reg = r8_from_opcode(bus_read(cpu, cpu->pc));
   uint8_t a = cpu->registers[R8_A];
   uint8_t value = cpu->registers[target_reg];
   uint8_t result = a - value;
@@ -233,7 +233,7 @@ void sub_a_r8(cpu_t *const restrict cpu) {
 
 void sub_a_hl_ref(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 2) {
-    cpu->first_operand = cpu->ram[read_r16(cpu, R16_HL)];
+    cpu->first_operand = bus_read(cpu, read_r16(cpu, R16_HL));
     cpu->pc += 1;
   } else if (cpu->cycles_left == 1) {
     uint8_t a = cpu->registers[R8_A];
@@ -249,7 +249,7 @@ void sub_a_hl_ref(cpu_t *const restrict cpu) {
 }
 
 void sbc_a_r8(cpu_t *const restrict cpu) {
-  r8_t target_reg = r8_from_opcode(cpu->ram[cpu->pc]);
+  r8_t target_reg = r8_from_opcode(bus_read(cpu, cpu->pc));
   uint8_t a = cpu->registers[R8_A];
   uint8_t value = cpu->registers[target_reg];
   uint8_t carry_in = cpu->registers[R8_F] & CARRY ? 1 : 0;
@@ -275,7 +275,7 @@ void sbc_a_r8(cpu_t *const restrict cpu) {
 
 void sbc_a_hl_ref(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 2) {
-    cpu->first_operand = cpu->ram[read_r16(cpu, R16_HL)];
+    cpu->first_operand = bus_read(cpu, read_r16(cpu, R16_HL));
     cpu->pc += 1;
   } else if (cpu->cycles_left == 1) {
     uint8_t a = cpu->registers[R8_A];
@@ -304,7 +304,7 @@ void sbc_a_hl_ref(cpu_t *const restrict cpu) {
 void add_a_imm8(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 1) {
     uint8_t a = cpu->registers[R8_A];
-    uint8_t value = cpu->ram[cpu->pc];
+    uint8_t value = bus_read(cpu, cpu->pc);
     uint8_t result = a + value;
     cpu->registers[R8_A] = result;
     uint8_t half_carry = OVERFLOW_FROM_BIT3(a, value) ? HALF_CARRY : 0;
@@ -319,7 +319,7 @@ void add_a_imm8(cpu_t *const restrict cpu) {
 void adc_a_imm8(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 1) {
     uint8_t a = cpu->registers[R8_A];
-    uint8_t value = cpu->ram[cpu->pc];
+    uint8_t value = bus_read(cpu, cpu->pc);
     uint8_t carry_in = cpu->registers[R8_F] & CARRY ? 1 : 0;
     uint8_t result = a + value + carry_in;
     cpu->registers[R8_A] = result;
@@ -345,7 +345,7 @@ void adc_a_imm8(cpu_t *const restrict cpu) {
 void sub_a_imm8(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 1) {
     uint8_t a = cpu->registers[R8_A];
-    uint8_t value = cpu->ram[cpu->pc];
+    uint8_t value = bus_read(cpu, cpu->pc);
     uint8_t result = a - value;
     cpu->registers[R8_A] = result;
     uint8_t half_carry = UNDERFLOW_FROM_BIT3(a, value) ? HALF_CARRY : 0;
@@ -360,7 +360,7 @@ void sub_a_imm8(cpu_t *const restrict cpu) {
 void sbc_a_imm8(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 1) {
     uint8_t a = cpu->registers[R8_A];
-    uint8_t value = cpu->ram[cpu->pc];
+    uint8_t value = bus_read(cpu, cpu->pc);
     uint8_t carry_in = cpu->registers[R8_F] & CARRY ? 1 : 0;
     uint8_t result = a - value - carry_in;
     cpu->registers[R8_A] = result;
@@ -387,11 +387,11 @@ void add_sp_s8(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 4) {
     cpu->pc += 1;
   } else if (cpu->cycles_left == 3) {
-    cpu->first_operand = cpu->ram[cpu->pc];
+    cpu->first_operand = bus_read(cpu, cpu->pc);
   } else if (cpu->cycles_left == 2) {
   } else if (cpu->cycles_left == 1) {
     uint16_t sp = cpu->sp;
-    int8_t value = (int8_t)cpu->ram[cpu->pc];
+    int8_t value = (int8_t)bus_read(cpu, cpu->pc);
     uint16_t result = sp + value;
     cpu->sp = result;
     uint8_t half_carry = OVERFLOW_FROM_BIT3((sp & 0xFF), (uint8_t)value) ? HALF_CARRY : 0;
@@ -405,7 +405,7 @@ void add_sp_s8(cpu_t *const restrict cpu) {
 void cp_a_imm8(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 1) {
     uint8_t a = cpu->registers[R8_A];
-    uint8_t value = cpu->ram[cpu->pc];
+    uint8_t value = bus_read(cpu, cpu->pc);
     uint8_t result = a - value;
     uint8_t half_carry = UNDERFLOW_FROM_BIT3(a, value) ? HALF_CARRY : 0;
     uint8_t carry = UNDERFLOW_FROM_BIT7(a, value) ? CARRY : 0;

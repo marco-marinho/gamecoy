@@ -1,12 +1,13 @@
 #include "cpu.h"
 #include "executor.h"
 #include "instructions.h"
+#include "mmu.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 void decode_instruction(cpu_t *const restrict cpu) {
-  uint8_t opcode = cpu->ram[cpu->pc];
+  uint8_t opcode = bus_read(cpu, cpu->pc);
   switch (opcode) {
   case 0x00: // NOP
     cpu->current_opcode = OP_NOP;
@@ -549,7 +550,7 @@ void decode_instruction(cpu_t *const restrict cpu) {
 }
 
 void decode_cb_instruction(cpu_t *const restrict cpu) {
-  uint8_t cb_opcode = cpu->ram[cpu->pc];
+  uint8_t cb_opcode = bus_read(cpu, cpu->pc);
   switch (cb_opcode) {
   case 0x00: // RLC B
   case 0x01: // RLC C

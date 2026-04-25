@@ -1,5 +1,6 @@
 #include "cpu.h"
 #include "util.h"
+#include "mmu.h"
 #include <stdint.h>
 
 void rlca(cpu_t *const restrict cpu) {
@@ -42,7 +43,7 @@ void rra(cpu_t *const restrict cpu) {
 
 void rlc_r8(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 1) {
-    r8_t reg = r8_from_cb_opcode(cpu->ram[cpu->pc]);
+    r8_t reg = r8_from_cb_opcode(bus_read(cpu, cpu->pc));
     uint8_t value = cb_load(cpu, reg);
     uint8_t carry = (value >> 7) & 0x01;
     uint8_t result = (value << 1) | carry;
@@ -57,7 +58,7 @@ void rlc_r8(cpu_t *const restrict cpu) {
 
 void rrc_r8(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 1) {
-    r8_t reg = r8_from_cb_opcode(cpu->ram[cpu->pc]);
+    r8_t reg = r8_from_cb_opcode(bus_read(cpu, cpu->pc));
     uint8_t value = cb_load(cpu, reg);
     uint8_t carry = value & 0x01;
     uint8_t result = (value >> 1) | (carry << 7);
@@ -72,7 +73,7 @@ void rrc_r8(cpu_t *const restrict cpu) {
 
 void rl_r8(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 1) {
-    r8_t reg = r8_from_cb_opcode(cpu->ram[cpu->pc]);
+    r8_t reg = r8_from_cb_opcode(bus_read(cpu, cpu->pc));
     uint8_t value = cb_load(cpu, reg);
     uint8_t old_carry = (cpu->registers[R8_F] & CARRY) ? 1 : 0;
     uint8_t new_carry = (value >> 7) & 0x01;
@@ -88,7 +89,7 @@ void rl_r8(cpu_t *const restrict cpu) {
 
 void rr_r8(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 1) {
-    r8_t reg = r8_from_cb_opcode(cpu->ram[cpu->pc]);
+    r8_t reg = r8_from_cb_opcode(bus_read(cpu, cpu->pc));
     uint8_t value = cb_load(cpu, reg);
     uint8_t old_carry = (cpu->registers[R8_F] & CARRY) ? 1 : 0;
     uint8_t new_carry = value & 0x01;
@@ -104,7 +105,7 @@ void rr_r8(cpu_t *const restrict cpu) {
 
 void sla_r8(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 1) {
-    r8_t reg = r8_from_cb_opcode(cpu->ram[cpu->pc]);
+    r8_t reg = r8_from_cb_opcode(bus_read(cpu, cpu->pc));
     uint8_t value = cb_load(cpu, reg);
     uint8_t new_carry = (value >> 7) & 0x01;
     uint8_t result = (value << 1);
@@ -119,7 +120,7 @@ void sla_r8(cpu_t *const restrict cpu) {
 
 void sra_r8(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 1) {
-    r8_t reg = r8_from_cb_opcode(cpu->ram[cpu->pc]);
+    r8_t reg = r8_from_cb_opcode(bus_read(cpu, cpu->pc));
     uint8_t value = cb_load(cpu, reg);
     uint8_t new_carry = value & 0x01;
     uint8_t msb = value & 0x80;
@@ -135,7 +136,7 @@ void sra_r8(cpu_t *const restrict cpu) {
 
 void swap_r8(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 1) {
-    r8_t reg = r8_from_cb_opcode(cpu->ram[cpu->pc]);
+    r8_t reg = r8_from_cb_opcode(bus_read(cpu, cpu->pc));
     uint8_t value = cb_load(cpu, reg);
     uint8_t upper_nibble = (value >> 4) & 0x0F;
     uint8_t lower_nibble = value & 0x0F;
@@ -150,7 +151,7 @@ void swap_r8(cpu_t *const restrict cpu) {
 
 void srl_r8(cpu_t *const restrict cpu) {
   if (cpu->cycles_left == 1) {
-    r8_t reg = r8_from_cb_opcode(cpu->ram[cpu->pc]);
+    r8_t reg = r8_from_cb_opcode(bus_read(cpu, cpu->pc));
     uint8_t value = cb_load(cpu, reg);
     uint8_t new_carry = value & 0x01;
     uint8_t result = (value >> 1);
