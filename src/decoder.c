@@ -425,6 +425,10 @@ void decode_instruction(cpu_t *const restrict cpu) {
     cpu->current_opcode = OP_JP_Z_IMM16;
     cpu->cycles_left = 4;
     break;
+  case 0xCB: // CB prefix
+    cpu->current_opcode = OP_CB_PREFIX;
+    cpu->cycles_left = 2;
+    break;
   case 0xCC: // CALL Z, a16
     cpu->current_opcode = OP_CALL_Z_IMM16;
     cpu->cycles_left = 6;
@@ -539,6 +543,44 @@ void decode_instruction(cpu_t *const restrict cpu) {
     break;
   default:
     fprintf(stderr, "[Decoder] Unknown opcode: 0x%02X\n", opcode);
+    exit(EXIT_FAILURE);
+  }
+  execute_instruction(cpu);
+}
+
+void decode_cb_instruction(cpu_t *const restrict cpu) {
+  uint8_t cb_opcode = cpu->ram[cpu->pc];
+  switch (cb_opcode) {
+  case 0x00: // RLC B
+  case 0x01: // RLC C
+  case 0x02: // RLC D
+  case 0x03: // RLC E
+  case 0x04: // RLC H
+  case 0x05: // RLC L
+  case 0x07: // RLC A
+    cpu->current_opcode = CB_RLC_R8;
+    cpu->cycles_left = 1;
+    break;
+  case 0x06: // RLC (HL)
+    cpu->current_opcode = CB_RLC_R8;
+    cpu->cycles_left = 3;
+    break;
+  case 0x08: // RRC B
+  case 0x09: // RRC C
+  case 0x0A: // RRC D
+  case 0x0B: // RRC E
+  case 0x0C: // RRC H
+  case 0x0D: // RRC L
+  case 0x0F: // RRC A
+    cpu->current_opcode = CB_RRC_R8;
+    cpu->cycles_left = 1;
+    break;
+  case 0x0E: // RRC (HL)
+    cpu->current_opcode = CB_RRC_R8;
+    cpu->cycles_left = 3;
+    break;
+  default:
+    fprintf(stderr, "[Decoder] Unknown CB opcode: 0x%02X\n", cb_opcode);
     exit(EXIT_FAILURE);
   }
   execute_instruction(cpu);

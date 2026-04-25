@@ -97,4 +97,8 @@ typedef enum {
   OP_LD_A_REF16,
   OP_EI,
   OP_CP_A_IMM8,
+  OP_CB_PREFIX,
+  OP_MUST_FETCH_CB,
+  CB_RLC_R8,
+  CB_RRC_R8,
 } opcode_t;

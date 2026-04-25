@@ -1,4 +1,5 @@
 #include "cpu.h"
+#include "instructions.h"
 
 void nop(cpu_t *const restrict cpu) {
   cpu->pc += 1;
@@ -79,5 +80,11 @@ void di(cpu_t *const restrict cpu) {
 void ei(cpu_t *const restrict cpu) {
   cpu->ie_delay = 2;
   cpu->pc += 1;
+  cpu->cycles_left -= 1;
+}
+
+void cb_prefix(cpu_t *const restrict cpu) {
+  cpu->pc += 1;
+  cpu->current_opcode = OP_MUST_FETCH_CB;
   cpu->cycles_left -= 1;
 }

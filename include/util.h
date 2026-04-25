@@ -24,3 +24,6 @@ r16_t r16_from_opcode(uint8_t opcode);
 r8_pair_t r8_pair_from_opcode(uint8_t opcode);
 r8_pair_t r8_pair_from_r16(r16_t r16);
 uint16_t get_rst_vector(uint8_t opcode);
+r8_t r8_from_cb_opcode(uint8_t opcode);
+uint8_t cb_load(cpu_t *const restrict cpu, r8_t reg);
+void cb_store(cpu_t *const restrict cpu, r8_t reg, uint8_t value);

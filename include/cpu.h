@@ -43,6 +43,7 @@ typedef enum {
   R8_G = 6, // Not an actual register, unused
   R8_H = 7,
   R8_L = 8,
+  HL_REF = 9, // Not an actual register, used to indicate (HL) in certain instructions
 } r8_t;
 
 void tick(cpu_t *const cpu);

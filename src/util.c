@@ -1,7 +1,7 @@
 #include "util.h"
 #include "cpu.h"
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 r8_t r8_from_opcode(uint8_t opcode) {
   switch (opcode) {
@@ -109,7 +109,6 @@ r8_t r8_from_opcode(uint8_t opcode) {
   }
 }
 
-
 r16_t r16_from_opcode(uint8_t opcode) {
   switch (opcode) {
   case 0x01: // LD BC, d16
@@ -141,7 +140,8 @@ r16_t r16_from_opcode(uint8_t opcode) {
   case 0xF5: // PUSH AF
     return R16_AF;
   default:
-    fprintf(stderr, "[Util - r16_from_opcode] Unknown opcode: 0x%02X\n", opcode);
+    fprintf(stderr, "[Util - r16_from_opcode] Unknown opcode: 0x%02X\n",
+            opcode);
     exit(EXIT_FAILURE);
   }
 }
@@ -247,7 +247,8 @@ r8_pair_t r8_pair_from_opcode(uint8_t opcode) {
   case 0x7F:
     return (r8_pair_t){.first_operand = R8_A, .second_operand = R8_A};
   default:
-    fprintf(stderr, "[Util - r8_pair_from_opcode] Unknown opcode: 0x%02X\n", opcode);
+    fprintf(stderr, "[Util - r8_pair_from_opcode] Unknown opcode: 0x%02X\n",
+            opcode);
     exit(EXIT_FAILURE);
   }
 }
@@ -268,26 +269,76 @@ r8_pair_t r8_pair_from_r16(r16_t r16) {
   }
 }
 
-uint16_t get_rst_vector(uint8_t opcode){
+uint16_t get_rst_vector(uint8_t opcode) {
   switch (opcode) {
-    case 0xC7: // RST 00H
-      return 0x00;
-    case 0xCF: // RST 08H
-      return 0x08;
-    case 0xD7: // RST 10H
-      return 0x10;
-    case 0xDF: // RST 18H
-      return 0x18;
-    case 0xE7: // RST 20H
-      return 0x20;
-    case 0xEF: // RST 28H
-      return 0x28;
-    case 0xF7: // RST 30H
-      return 0x30;
-    case 0xFF: // RST 38H
-      return 0x38;
-    default:
-      fprintf(stderr, "[Util - get_rst_vector] Unknown opcode: 0x%02X\n", opcode);
-      exit(EXIT_FAILURE);
+  case 0xC7: // RST 00H
+    return 0x00;
+  case 0xCF: // RST 08H
+    return 0x08;
+  case 0xD7: // RST 10H
+    return 0x10;
+  case 0xDF: // RST 18H
+    return 0x18;
+  case 0xE7: // RST 20H
+    return 0x20;
+  case 0xEF: // RST 28H
+    return 0x28;
+  case 0xF7: // RST 30H
+    return 0x30;
+  case 0xFF: // RST 38H
+    return 0x38;
+  default:
+    fprintf(stderr, "[Util - get_rst_vector] Unknown opcode: 0x%02X\n", opcode);
+    exit(EXIT_FAILURE);
+  }
+}
+
+r8_t r8_from_cb_opcode(uint8_t opcode) {
+  uint8_t lower_nibble = opcode & 0x0F;
+  switch (lower_nibble) {
+  case 0x00:
+  case 0x08:
+    return R8_B;
+  case 0x01:
+  case 0x09:
+    return R8_C;
+  case 0x02:
+  case 0x0A:
+    return R8_D;
+  case 0x03:
+  case 0x0B:
+    return R8_E;
+  case 0x04:
+  case 0x0C:
+    return R8_H;
+  case 0x05:
+  case 0x0D:
+    return R8_L;
+  case 0x07:
+  case 0x0F:
+    return R8_A;
+  case 0x06:
+  case 0x0E:
+    return HL_REF;
+  default:
+    fprintf(stderr, "[Util - r8_from_cb_opcode] Unknown CB opcode: 0x%02X\n",
+            opcode);
+    exit(EXIT_FAILURE);
+  }
+};
+
+uint8_t cb_load(cpu_t *const restrict cpu, r8_t reg) {
+  if (reg == HL_REF) {
+    return cpu->ram[(cpu->registers[R8_H] << 8) | cpu->registers[R8_L]];
+  } else {
+    return cpu->registers[reg];
+  }
+}
+
+void cb_store(cpu_t *const restrict cpu, r8_t reg, uint8_t value) {
+  if (reg == HL_REF) {
+    cpu->ram[(cpu->registers[R8_H] << 8) | cpu->registers[R8_L]] = value;
+  } else {
+    cpu->registers[reg] = value;
   }
 }

@@ -297,6 +297,15 @@ void execute_instruction(cpu_t *const restrict cpu) {
   case OP_CP_A_IMM8:
     cp_a_imm8(cpu);
     break;
+  case OP_CB_PREFIX:
+    cb_prefix(cpu);
+    break;
+  case CB_RLC_R8:
+    rlc_r8(cpu);
+    break;
+  case CB_RRC_R8:
+    rrc_r8(cpu);
+    break;
   default:
     fprintf(stderr, "[Executor] Unknown opcode: 0x%02X\n", cpu->current_opcode);
     exit(EXIT_FAILURE);
